@@ -1,0 +1,870 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background: #f5f5f5;
+  overflow-x: hidden;
+  color: #333;
+}
+
+/* =========================
+   NAVBAR ELEGANT
+========================= */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(141, 95, 95, 0.96);
+  padding: 18px 50px;
+  color: white;
+
+  position: sticky;
+  top: 0;
+  z-index: 999;
+
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  transition: 0.3s ease;
+}
+
+/* LOGO */
+.logo-text h1 {
+  font-family: cursive;
+  font-size: 34px;
+  letter-spacing: 1px;
+  font-weight: bold;
+
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.15);
+
+  transition: 0.3s;
+}
+
+.logo-text h1:hover {
+  transform: scale(1.02);
+}
+
+.logo-text p {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* NAVIGATION */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+nav a {
+  position: relative;
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+
+  padding: 8px 0;
+
+  transition: 0.3s ease;
+}
+
+/* garis animasi bawah */
+nav a::after {
+  content: "";
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 0%;
+  height: 2px;
+
+  background: white;
+  border-radius: 50px;
+
+  transition: 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+nav a:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* efek glow halus navbar */
+.navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(120deg,
+      rgba(255, 255, 255, 0.04),
+      transparent,
+      rgba(255, 255, 255, 0.02));
+
+  pointer-events: none;
+}
+
+/* =========================
+   MOBILE NAVBAR
+========================= */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px;
+    text-align: center;
+  }
+
+  .logo-text h1 {
+    font-size: 28px;
+  }
+
+  .logo-text p {
+    font-size: 12px;
+  }
+
+  nav {
+    gap: 20px;
+  }
+
+  nav a {
+    font-size: 14px;
+  }
+
+}
+
+/* =========================
+   HERO
+========================= */
+.hero {
+  height: 90vh;
+  background: url('images/bg.jpg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(1px);
+}
+
+.overlay {
+  text-align: center;
+  color: #222;
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  animation: fadeUp 1s ease;
+}
+
+.overlay h2 {
+  font-size: 52px;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* BUTTON */
+.cta {
+  background: linear-gradient(135deg, #8d5f5f 0%, #ab7575 100%);
+  color: white;
+  border: none;
+  padding: 16px 36px;
+  border-radius: 50px;
+  font-size: 17px;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(141, 95, 95, 0.4);
+}
+
+.cta:hover {
+  background: linear-gradient(135deg, #754c4c 0%, #8d5f5f 100%);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(141, 95, 95, 0.5);
+}
+
+/* DESC */
+.desc {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 30px;
+  line-height: 1.7;
+}
+
+/* LOCATION */
+.location {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.location img {
+  width: 20px;
+}
+
+.location a {
+  text-decoration: none;
+  color: #3b82f6;
+  transition: 0.3s;
+}
+
+.location a:hover {
+  opacity: 0.7;
+}
+
+/* =========================
+   HALAMAN TREATMENT
+========================= */
+.treatment-page {
+  min-height: 90vh;
+  background: url('images/bg.jpg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.card-container {
+  display: flex;
+  gap: 45px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeUp 0.8s ease;
+}
+
+/* CARD STYLE */
+.card {
+  position: relative;
+  width: 270px;
+  height: 350px;
+  border-radius: 28px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.35s;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.4s;
+}
+
+/* overlay transparan */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.45),
+      rgba(255, 255, 255, 0.15));
+}
+
+.card-text {
+  position: absolute;
+  bottom: 25px;
+  left: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  z-index: 2;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* hover efek */
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.card:hover img {
+  transform: scale(1.08);
+}
+
+/* =========================
+   HALAMAN HARGA & BOOKING
+========================= */
+.price-page {
+  min-height: 90vh;
+  background: url('images/bg.jpg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 16px;
+}
+
+.price-card {
+  width: min(900px, 100%);
+  background: rgba(141, 95, 95, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  padding: 35px;
+  color: #fff;
+  animation: fadeUp 0.8s ease;
+}
+
+.price-header h2 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.price-header p {
+  opacity: 0.92;
+  margin-bottom: 22px;
+}
+
+.service-list {
+  display: grid;
+  gap: 14px;
+}
+
+.service-item {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.service-item:hover {
+  transform: scale(1.01);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.service-info h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.service-info p {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: white;
+  color: #8d5f5f;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.qty-btn:hover {
+  transform: scale(1.08);
+}
+
+.qty {
+  min-width: 24px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.checkout-box {
+  margin-top: 22px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+.total-line strong {
+  font-size: 25px;
+}
+
+.wa-btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #25d366 0%, #1da851 100%);
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.wa-btn:hover {
+  background: linear-gradient(135deg, #1fb457 0%, #168a41 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.5);
+}
+
+/* =========================
+   FORM BOOKING
+========================= */
+.booking-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.field-group {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.field-group label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  opacity: 0.95;
+}
+
+.field-group input {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 20px;
+  }
+
+  nav a {
+    margin: 0 10px;
+  }
+
+  .overlay h2 {
+    font-size: 30px;
+  }
+
+  .desc {
+    font-size: 14px;
+  }
+
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 90%;
+    height: 300px;
+  }
+
+  .price-card {
+    padding: 18px;
+  }
+
+  .price-header h2 {
+    font-size: 24px;
+  }
+
+  .service-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .booking-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .total-line {
+    font-size: 16px;
+  }
+
+  .total-line strong {
+    font-size: 22px;
+  }
+
+}
+
+/* =========================
+   WEDDING PAGE UPGRADE
+========================= */
+
+.price-page {
+  position: relative;
+}
+
+.price-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(2px);
+}
+
+/* CARD */
+.price-card {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.price-card::before {
+  content: "";
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  top: -100px;
+  right: -100px;
+  pointer-events: none;
+}
+
+/* HEADER */
+.price-header {
+  margin-bottom: 25px;
+}
+
+.price-header h2 {
+  font-size: 38px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.price-header p {
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* FORM */
+.field-group {
+  transition: 0.3s;
+}
+
+.field-group:hover {
+  transform: translateY(-2px);
+}
+
+.field-group input {
+  transition: 0.3s;
+}
+
+.field-group input:focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+/* SERVICE CARD */
+.service-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.service-item::before {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  right: -40px;
+  top: -40px;
+  pointer-events: none;
+}
+
+.service-info h3 {
+  font-size: 18px;
+}
+
+.service-info p {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* QTY */
+.qty-control {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 12px;
+  border-radius: 50px;
+}
+
+/* TOTAL */
+.checkout-box {
+  margin-top: 28px;
+}
+
+.total-line span {
+  font-size: 17px;
+}
+
+.total-line strong {
+  letter-spacing: 1px;
+}
+
+/* BUTTON */
+.wa-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.wa-btn::before {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.2);
+  top: -50%;
+  left: -40px;
+  transform: rotate(20deg);
+  transition: 0.6s;
+  pointer-events: none;
+}
+
+.wa-btn:hover::before {
+  left: 120%;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .price-page {
+    padding: 20px 12px;
+  }
+
+  .price-card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .price-header h2 {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  .price-header p {
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .service-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .qty-control {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .booking-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .wa-btn {
+    font-size: 15px;
+  }
+
+}
+
+/* =========================
+   ABOUT PAGE
+========================= */
+
+.about-page {
+  min-height: 100vh;
+  background: url('images/bg.jpg') center/cover no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px 20px;
+  position: relative;
+}
+
+.about-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(3px);
+}
+
+.about-card {
+  position: relative;
+  z-index: 2;
+
+  width: min(700px, 100%);
+  background: rgba(141, 95, 95, 0.92);
+
+  padding: 40px;
+  border-radius: 28px;
+
+  color: white;
+
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.2);
+
+  animation: fadeUp 0.8s ease;
+}
+
+.about-card h2 {
+  font-size: 42px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.about-desc {
+  text-align: center;
+  line-height: 1.8;
+  font-size: 15px;
+  margin-bottom: 35px;
+  opacity: 0.95;
+}
+
+/* CONTACT */
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  text-decoration: none;
+  color: white;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  padding: 18px 20px;
+
+  border-radius: 18px;
+
+  transition: 0.3s;
+}
+
+.contact-item:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.contact-item span {
+  font-size: 28px;
+}
+
+.contact-item h3 {
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+
+.contact-item p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .about-card {
+    padding: 28px 22px;
+  }
+
+  .about-card h2 {
+    font-size: 32px;
+  }
+
+  .about-desc {
+    font-size: 14px;
+  }
+
+  .contact-item {
+    padding: 16px;
+  }
+
+  .contact-item span {
+    font-size: 24px;
+  }
+
+}

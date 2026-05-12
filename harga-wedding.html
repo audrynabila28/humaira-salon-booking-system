@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harga Paket Wedding</title>
+
+  <!-- FONT -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+
+    <div class="logo-text">
+      <h1>Humaira Salon</h1>
+      <p>Your Daily Beauty Partner</p>
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="treatment.html">Treatment</a>
+      <a href="about.html">About Us</a>
+    </nav>
+
+  </header>
+
+  <!-- PRICE PAGE -->
+  <main class="price-page">
+
+    <section class="price-card">
+
+      <div class="price-header">
+        <h2>Paket Wedding</h2>
+
+        <p>
+          Pilih paket, tentukan tanggal & jam,
+          lalu booking langsung via WhatsApp
+        </p>
+      </div>
+
+      <!-- FORM BOOKING -->
+      <div class="booking-meta">
+
+        <div class="field-group">
+          <label for="bookingDate">Tanggal Booking</label>
+          <input type="date" id="bookingDate">
+        </div>
+
+        <div class="field-group">
+          <label for="bookingTime">Jam Booking</label>
+          <input type="time" id="bookingTime">
+        </div>
+
+      </div>
+
+      <!-- SERVICE LIST -->
+      <div class="service-list" id="serviceList">
+
+        <!-- ITEM -->
+        <div class="service-item" data-name="Paket Akad Basic" data-price="1500000">
+
+          <div class="service-info">
+            <h3>Paket Akad Basic</h3>
+            <p>Rp1.500.000</p>
+          </div>
+
+          <div class="qty-control">
+            <button class="qty-btn btn-minus" type="button">-</button>
+
+            <span class="qty">0</span>
+
+            <button class="qty-btn btn-plus" type="button">+</button>
+          </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="service-item" data-name="Paket Resepsi Silver" data-price="2500000">
+
+          <div class="service-info">
+            <h3>Paket Resepsi Silver</h3>
+            <p>Rp2.500.000</p>
+          </div>
+
+          <div class="qty-control">
+            <button class="qty-btn btn-minus" type="button">-</button>
+
+            <span class="qty">0</span>
+
+            <button class="qty-btn btn-plus" type="button">+</button>
+          </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="service-item" data-name="Paket Resepsi Gold" data-price="3500000">
+
+          <div class="service-info">
+            <h3>Paket Resepsi Gold</h3>
+            <p>Rp3.500.000</p>
+          </div>
+
+          <div class="qty-control">
+            <button class="qty-btn btn-minus" type="button">-</button>
+
+            <span class="qty">0</span>
+
+            <button class="qty-btn btn-plus" type="button">+</button>
+          </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="service-item" data-name="Paket Makeup Family" data-price="500000">
+
+          <div class="service-info">
+            <h3>Paket Makeup Family</h3>
+            <p>Rp500.000</p>
+          </div>
+
+          <div class="qty-control">
+            <button class="qty-btn btn-minus" type="button">-</button>
+
+            <span class="qty">0</span>
+
+            <button class="qty-btn btn-plus" type="button">+</button>
+          </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="service-item" data-name="Paket Dekorasi + MUA" data-price="5000000">
+
+          <div class="service-info">
+            <h3>Paket Dekorasi + MUA</h3>
+            <p>Rp5.000.000</p>
+          </div>
+
+          <div class="qty-control">
+            <button class="qty-btn btn-minus" type="button">-</button>
+
+            <span class="qty">0</span>
+
+            <button class="qty-btn btn-plus" type="button">+</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- CHECKOUT -->
+      <div class="checkout-box">
+
+        <div class="total-line">
+          <span>Total</span>
+          <strong id="grandTotal">Rp0</strong>
+        </div>
+
+        <button id="bookingBtn" class="wa-btn" type="button">
+          Booking Now (WhatsApp)
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="booking.js"></script>
+
+</body>
+
+</html>
