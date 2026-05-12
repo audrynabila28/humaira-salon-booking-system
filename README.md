@@ -51,4 +51,4 @@ Currently under development and continuously improving based on client feedback 
 
 ## Screenshots
 
-![preview](images/preview.png)
+![preview](images/Preview.png)
