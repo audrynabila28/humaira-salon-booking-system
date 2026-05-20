@@ -16,7 +16,7 @@
 Proyek ini diselesaikan secara kolaboratif sebagai bagian dari portofolio profesional dan Kerja Praktek dengan pembagian peran yang terstruktur:
 
 ### 🎨 Frontend UI & UX Engineer
-**[Nama Teman Anda / Rekan Kerja]**
+**Elan Nurhaliza**
 *   **Desain Antarmuka & Tata Letak**: Merancang visual website menggunakan HTML5 dan Vanilla CSS dengan pendekatan estetika premium, elegan, dan responsif.
 *   **Responsivitas Mobile**: Mengoptimalkan grid, layout, dan media queries agar website nyaman diakses dari smartphone pelanggan.
 *   **Interaksi Sisi Klien**: Menangani manipulasi DOM, state kuantitas belanja perawatan, visualisasi tab kategori layanan, dan kalkulasi dinamis sementara di browser.
