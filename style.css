@@ -111,6 +111,10 @@ nav a:hover {
   transform: translateY(-1px);
 }
 
+nav a.active::after {
+  width: 100%;
+}
+
 /* efek glow halus navbar */
 .navbar::before {
   content: "";

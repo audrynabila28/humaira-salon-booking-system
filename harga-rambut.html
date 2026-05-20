@@ -18,8 +18,9 @@
 
     <nav>
       <a href="index.html">Home</a>
-      <a href="treatment.html">Treatment</a>
+      <a href="treatment.html" class="active">Treatment</a>
       <a href="about.html">About Us</a>
+      <a href="profile.html">Profile</a>
     </nav>
   </header>
 
@@ -30,7 +31,23 @@
         <p>Pilih layanan, tentukan tanggal & jam, lalu booking via WhatsApp</p>
       </div>
 
-      <div class="booking-meta">
+      <!-- MEMBER WELCOME BANNER -->
+      <p id="memberWelcome" style="display: none; background: rgba(255,255,255,0.15); padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: 500; font-size: 14px; text-align: center; border: 1px dashed rgba(255,255,255,0.2);"></p>
+
+      <!-- GUEST INFO SECTION (Hanya jika belum login) -->
+      <div class="booking-meta" id="guestInfoSection">
+        <div class="field-group">
+          <label for="guestName">Nama Anda (Tamu)</label>
+          <input type="text" id="guestName" placeholder="Masukkan nama lengkap" style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: #fff; color: #333;">
+        </div>
+        <div class="field-group">
+          <label for="guestPhone">Nomor WhatsApp</label>
+          <input type="text" id="guestPhone" placeholder="Contoh: 089646946880" style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: #fff; color: #333;">
+        </div>
+      </div>
+
+      <!-- DATE & TIME SELECTION -->
+      <div class="booking-meta" style="margin-top: 15px;">
         <div class="field-group">
           <label for="bookingDate">Tanggal Booking</label>
           <input type="date" id="bookingDate">
@@ -41,149 +58,9 @@
         </div>
       </div>
 
+      <!-- SERVICE LIST CONTAINER -->
       <div class="service-list" id="serviceList">
-        <div class="service-item" data-name="Potong Rambut" data-price="45000">
-          <div class="service-info">
-            <h3>Potong Rambut</h3>
-            <p>Rp45.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="PR Anak Balita" data-price="35000">
-          <div class="service-info">
-            <h3>PR Anak Balita</h3>
-            <p>Rp35.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Cuci Rambut" data-price="15000">
-          <div class="service-info">
-            <h3>Cuci Rambut</h3>
-            <p>Rp15.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Blow Rambut" data-price="15000">
-          <div class="service-info">
-            <h3>Blow Rambut</h3>
-            <p>Rp15.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Catok Rambut Vit" data-price="45000">
-          <div class="service-info">
-            <h3>Catok Rambut Vit</h3>
-            <p>Rp45.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Vitamin" data-price="3000">
-          <div class="service-info">
-            <h3>Vitamin</h3>
-            <p>Rp3.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Warna Rambut" data-price="250000">
-          <div class="service-info">
-            <h3>Warna Rambut</h3>
-            <p>Rp250.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Rebonding Mulai dari" data-price="300000">
-          <div class="service-info">
-            <h3>Rebonding Mulai dari</h3>
-            <p>Rp300.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Smoothing Mulai dari" data-price="350000">
-          <div class="service-info">
-            <h3>Smoothing Mulai dari</h3>
-            <p>Rp350.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Krimbath" data-price="55000">
-          <div class="service-info">
-            <h3>Krimbath</h3>
-            <p>Rp55.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Krimbath Treat" data-price="85000">
-          <div class="service-info">
-            <h3>Krimbath Treat</h3>
-            <p>Rp85.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Hair Mask" data-price="60000">
-          <div class="service-info">
-            <h3>Hair Mask</h3>
-            <p>Rp60.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-
-        <div class="service-item" data-name="Hair Spa" data-price="45000">
-          <div class="service-info">
-            <h3>Hair Spa</h3>
-            <p>Rp45.000</p>
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button><span class="qty">0</span><button
-              class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
+        <p style="text-align: center; padding: 20px; opacity: 0.8;">Memuat daftar perawatan rambut...</p>
       </div>
 
       <div class="checkout-box">

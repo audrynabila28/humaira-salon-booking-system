@@ -4,21 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Harga Paket Wedding</title>
-
-  <!-- FONT -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <title>Harga Perawatan SPA</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- NAVBAR -->
   <header class="navbar">
-
     <div class="logo-text">
       <h1>Humaira Salon</h1>
       <p>Your Daily Beauty Partner</p>
@@ -30,21 +22,13 @@
       <a href="about.html">About Us</a>
       <a href="profile.html">Profile</a>
     </nav>
-
   </header>
 
-  <!-- PRICE PAGE -->
   <main class="price-page">
-
     <section class="price-card">
-
       <div class="price-header">
-        <h2>Paket Wedding</h2>
-
-        <p>
-          Pilih paket, tentukan tanggal & jam,
-          lalu booking langsung via WhatsApp
-        </p>
+        <h2>Perawatan SPA</h2>
+        <p>Pilih layanan, tentukan tanggal & jam, lalu booking via WhatsApp</p>
       </div>
 
       <!-- MEMBER WELCOME BANNER -->
@@ -62,46 +46,34 @@
         </div>
       </div>
 
-      <!-- FORM BOOKING -->
+      <!-- DATE & TIME SELECTION -->
       <div class="booking-meta" style="margin-top: 15px;">
-
         <div class="field-group">
           <label for="bookingDate">Tanggal Booking</label>
           <input type="date" id="bookingDate">
         </div>
-
         <div class="field-group">
           <label for="bookingTime">Jam Booking</label>
           <input type="time" id="bookingTime">
         </div>
-
       </div>
 
-      <!-- SERVICE LIST -->
+      <!-- SERVICE LIST CONTAINER -->
       <div class="service-list" id="serviceList">
-        <p style="text-align: center; padding: 20px; opacity: 0.8;">Memuat daftar paket pernikahan...</p>
+        <p style="text-align: center; padding: 20px; opacity: 0.8;">Memuat daftar perawatan SPA...</p>
       </div>
 
-      <!-- CHECKOUT -->
       <div class="checkout-box">
-
         <div class="total-line">
           <span>Total</span>
           <strong id="grandTotal">Rp0</strong>
         </div>
-
-        <button id="bookingBtn" class="wa-btn" type="button">
-          Booking Now (WhatsApp)
-        </button>
-
+        <button id="bookingBtn" class="wa-btn" type="button">Booking Now (WhatsApp)</button>
       </div>
-
     </section>
-
   </main>
 
   <script src="booking.js"></script>
-
 </body>
 
 </html>
