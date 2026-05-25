@@ -1,6 +1,6 @@
 (function () {
   const phoneNumber = "6289646946880"; // Nomor WhatsApp Humaira Salon
-  const API_URL = ''; // Mengarah ke local origin
+  const API_URL = ''; // Relative path ke API server (Vercel/Localhost)
 
   // Element selectors
   const serviceListEl = document.getElementById("serviceList");
@@ -14,7 +14,12 @@
   const guestNameEl = document.getElementById("guestName");
   const guestPhoneEl = document.getElementById("guestPhone");
 
-  let servicesData = [];
+  const cartItemsListEl = document.getElementById("cartItemsList");
+
+  // State Management
+  let allServices = [];           // Menyimpan data semua layanan dari server
+  let selectedQuantities = {};    // Object key-value { serviceId: quantity }
+  let activeCategory = 'rambut';   // Default kategori aktif
   let currentUser = null;
 
   // Helper format Rupiah
@@ -40,19 +45,55 @@
 
   // ON INITIALIZE
   async function init() {
-    // 1. Cek status autentikasi pelanggan
+    // 1. Cek parameter URL untuk menentukan tab aktif awal
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    if (categoryParam === 'rambut' || categoryParam === 'spa' || categoryParam === 'wedding') {
+      activeCategory = categoryParam;
+    }
+
+    // 2. Set status tab aktif di HTML
+    updateActiveTabUI();
+
+    // 3. Pasang event listener untuk Tab Kategori
+    setupTabListeners();
+
+    // 4. Cek status autentikasi pelanggan
     await checkMemberAuth();
 
-    // 2. Muat katalog harga secara dinamis dari API backend
-    await loadDynamicCatalog();
+    // 5. Muat data semua layanan dari API backend
+    await loadAllServices();
+  }
+
+  // UPDATE ACTIVE TAB CLASS DI UI
+  function updateActiveTabUI() {
+    const tabs = document.querySelectorAll(".category-tab");
+    tabs.forEach(tab => {
+      if (tab.dataset.category === activeCategory) {
+        tab.classList.add("active");
+      } else {
+        tab.classList.remove("active");
+      }
+    });
+  }
+
+  // SETUP EVENT LISTENERS PADA TAB KATEGORI
+  function setupTabListeners() {
+    const tabs = document.querySelectorAll(".category-tab");
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        activeCategory = tab.dataset.category;
+        updateActiveTabUI();
+        renderServices();
+      });
+    });
   }
 
   // MEMERIKSA STATUS LOGIN MEMBER
   async function checkMemberAuth() {
     const token = localStorage.getItem("humaira_token");
     if (!token) {
-      // Tidak ada token, tampilkan form Tamu (Guest)
-      if (guestInfoSection) guestInfoSection.style.display = "grid";
+      if (guestInfoSection) guestInfoSection.style.display = "flex";
       if (memberWelcome) memberWelcome.style.display = "none";
       return;
     }
@@ -65,15 +106,13 @@
       if (response.ok) {
         currentUser = await response.json();
         if (currentUser.role === 'customer') {
-          // Berhasil login sebagai customer, sembunyikan form Guest
           if (guestInfoSection) guestInfoSection.style.display = "none";
           if (memberWelcome) {
             memberWelcome.style.display = "block";
-            memberWelcome.innerHTML = `Memesan sebagai member: <strong>${currentUser.name}</strong> (${currentUser.phone}) - <a href="profile.html" style="color: #fff; text-decoration: underline;">Detail Akun</a>`;
+            memberWelcome.innerHTML = `Memesan sebagai member: <strong>${currentUser.name}</strong> (${currentUser.phone}) - <a href="profile.html" style="color: var(--accent-gold-glow); text-decoration: underline; font-weight: 600;">Detail Akun</a>`;
           }
         } else {
-          // Jika admin, biarkan bertindak sebagai Guest
-          if (guestInfoSection) guestInfoSection.style.display = "grid";
+          if (guestInfoSection) guestInfoSection.style.display = "flex";
           if (memberWelcome) memberWelcome.style.display = "none";
         }
       } else {
@@ -84,110 +123,153 @@
     }
   }
 
-  // LOAD KATALOG LAYANAN SECARA DINAMIS
-  async function loadDynamicCatalog() {
+  // LOAD SEMUA LAYANAN DARI API
+  async function loadAllServices() {
     if (!serviceListEl) return;
 
     try {
       const response = await fetch(`${API_URL}/api/services`);
-      if (!response.ok) throw new Error("Gagal mengambil data katalog.");
+      if (!response.ok) throw new Error("Gagal mengambil data katalog layanan.");
 
-      const services = await response.json();
-      
-      // Deteksi kategori berdasarkan judul halaman
-      const pageTitle = document.querySelector(".price-header h2").textContent.trim();
-      let targetCategory = "rambut";
-      if (pageTitle.includes("Wedding")) {
-        targetCategory = "wedding";
-      } else if (pageTitle.includes("SPA")) {
-        targetCategory = "spa";
-      }
-
-      // Filter layanan
-      servicesData = services.filter(s => s.category === targetCategory);
-
-      if (servicesData.length === 0) {
-        serviceListEl.innerHTML = `<p style="text-align: center; padding: 20px; opacity: 0.8;">Belum ada layanan tersedia.</p>`;
-        return;
-      }
-
-      // Render items
-      serviceListEl.innerHTML = servicesData.map(s => `
-        <div class="service-item" data-id="${s.id}" data-name="${s.name}" data-price="${s.price}">
-          <div class="service-info">
-            <h3>${s.name}</h3>
-            <p>${formatRupiah(s.price)}</p>
-            ${s.description ? `<p style="font-size: 12px; opacity: 0.85; margin-top: 4px; font-weight: 300;">${s.description}</p>` : ''}
-          </div>
-          <div class="qty-control">
-            <button class="qty-btn btn-minus" type="button">-</button>
-            <span class="qty">0</span>
-            <button class="qty-btn btn-plus" type="button">+</button>
-          </div>
-        </div>
-      `).join('');
-
-      // Attach event listeners
-      attachQtyListeners();
+      allServices = await response.json();
+      renderServices();
+      updateCheckout();
 
     } catch (error) {
       serviceListEl.innerHTML = `<p style="text-align: center; padding: 20px; color: #ff8b8b;">${error.message}</p>`;
     }
   }
 
-  // ATTACH PLUS & MINUS BUTTON EVENT LISTENERS
+  // RENDER DAFTAR LAYANAN SESUAI KATEGORI AKTIF
+  function renderServices() {
+    if (!serviceListEl) return;
+
+    // Filter berdasarkan kategori aktif
+    const filtered = allServices.filter(s => s.category === activeCategory);
+
+    if (filtered.length === 0) {
+      serviceListEl.innerHTML = `<p style="text-align: center; padding: 30px; opacity: 0.8; font-style: italic;">Belum ada layanan tersedia pada kategori ini.</p>`;
+      return;
+    }
+
+    // Render HTML
+    serviceListEl.innerHTML = filtered.map(s => {
+      const qty = selectedQuantities[s.id] || 0;
+      return `
+        <div class="service-item" data-id="${s.id}">
+          <div class="service-info">
+            <h3>${s.name}</h3>
+            <p>${formatRupiah(s.price)}</p>
+            ${s.description ? `<p style="font-size: 13px; opacity: 0.8; margin-top: 4px; font-weight: 300; line-height: 1.4;">${s.description}</p>` : ''}
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn btn-minus" data-id="${s.id}" type="button">-</button>
+            <span class="qty">${qty}</span>
+            <button class="qty-btn btn-plus" data-id="${s.id}" type="button">+</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Pasang Event Listener Qty Control
+    attachQtyListeners();
+  }
+
+  // ATTACH PLUS & MINUS BUTTON CLICK HANDLERS
   function attachQtyListeners() {
     const items = serviceListEl.querySelectorAll(".service-item");
-    
     items.forEach(item => {
+      const serviceId = Number(item.dataset.id);
       const minusBtn = item.querySelector(".btn-minus");
       const plusBtn = item.querySelector(".btn-plus");
       const qtyEl = item.querySelector(".qty");
 
       plusBtn.addEventListener("click", () => {
-        const currentQty = Number(qtyEl.textContent);
-        qtyEl.textContent = String(currentQty + 1);
-        updateTotal();
+        const currentQty = selectedQuantities[serviceId] || 0;
+        selectedQuantities[serviceId] = currentQty + 1;
+        qtyEl.textContent = String(selectedQuantities[serviceId]);
+        updateCheckout();
       });
 
       minusBtn.addEventListener("click", () => {
-        const currentQty = Number(qtyEl.textContent);
-        qtyEl.textContent = String(Math.max(0, currentQty - 1));
-        updateTotal();
+        const currentQty = selectedQuantities[serviceId] || 0;
+        if (currentQty > 0) {
+          selectedQuantities[serviceId] = currentQty - 1;
+          if (selectedQuantities[serviceId] === 0) {
+            delete selectedQuantities[serviceId];
+          }
+          qtyEl.textContent = String(selectedQuantities[serviceId] || 0);
+          updateCheckout();
+        }
       });
     });
   }
 
-  // DAPATKAN DAFTAR ITEM YANG DIPILIH
+  // DAPATKAN DAFTAR LAYANAN YANG TERPILIH DI CART
   function getSelectedItems() {
     const selected = [];
-    if (!serviceListEl) return selected;
-
-    const items = serviceListEl.querySelectorAll(".service-item");
-    items.forEach(item => {
-      const id = Number(item.dataset.id);
-      const name = item.dataset.name;
-      const price = Number(item.dataset.price || 0);
-      const qty = Number(item.querySelector(".qty").textContent);
-
-      if (qty > 0) {
+    Object.keys(selectedQuantities).forEach(idKey => {
+      const id = Number(idKey);
+      const qty = selectedQuantities[id];
+      const service = allServices.find(s => s.id === id);
+      if (service && qty > 0) {
         selected.push({
-          id,
-          name,
-          price,
-          qty,
-          subtotal: price * qty
+          id: service.id,
+          name: service.name,
+          category: service.category,
+          price: service.price,
+          qty: qty,
+          subtotal: service.price * qty
         });
       }
     });
     return selected;
   }
 
-  // UPDATE GRAND TOTAL BIAYA DI SCREEN
-  function updateTotal() {
+  // UPDATE LIVE CHECKOUT PANEL (TOTAL BIAYA & CART SUMMARY LIST)
+  function updateCheckout() {
     const selected = getSelectedItems();
     const total = selected.reduce((sum, item) => sum + item.subtotal, 0);
-    if (totalEl) totalEl.textContent = formatRupiah(total);
+    
+    // Update Total Biaya
+    if (totalEl) {
+      totalEl.textContent = formatRupiah(total);
+    }
+
+    // Render Cart Summary List
+    if (!cartItemsListEl) return;
+
+    if (selected.length === 0) {
+      cartItemsListEl.innerHTML = `<p style="font-size: 13px; opacity: 0.6; font-style: italic;">Belum ada layanan yang dipilih</p>`;
+      return;
+    }
+
+    cartItemsListEl.innerHTML = selected.map(item => {
+      const catPrefix = item.category === 'rambut' ? '💇‍♀️' : (item.category === 'spa' ? '🌸' : '💍');
+      return `
+        <div class="cart-item-row">
+          <div class="cart-item-info">
+            <span class="cart-item-name">${item.name}</span>
+            <span class="cart-item-qty">${item.qty}x ${catPrefix} (${formatRupiah(item.price)})</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="cart-item-price">${formatRupiah(item.subtotal)}</span>
+            <button class="cart-item-delete" data-id="${item.id}" type="button" title="Hapus Layanan">×</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach listener untuk tombol hapus cepat di keranjang
+    const deleteBtns = cartItemsListEl.querySelectorAll(".cart-item-delete");
+    deleteBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = Number(btn.dataset.id);
+        delete selectedQuantities[id];
+        renderServices(); // Update tampilan list layanan di tab kiri jika sedang aktif
+        updateCheckout(); // Update ulang keranjang
+      });
+    });
   }
 
   // SUBMIT BOOKING RESERVASI
@@ -197,13 +279,13 @@
       const bookingDate = bookingDateEl ? bookingDateEl.value : "";
       const bookingTime = bookingTimeEl ? bookingTimeEl.value : "";
 
-      // 1. Validasi pemilihan layanan
+      // 1. Validasi minimal memilih 1 layanan
       if (!selected.length) {
         alert("Pilih minimal 1 layanan kecantikan dulu ya.");
         return;
       }
 
-      // 2. Validasi Tanggal & Waktu
+      // 2. Validasi tanggal & jam
       if (!bookingDate) {
         alert("Silakan tentukan tanggal booking.");
         bookingDateEl && bookingDateEl.focus();
@@ -215,7 +297,7 @@
         return;
       }
 
-      // 3. Validasi Informasi Guest (jika tidak login)
+      // 3. Validasi info Guest (jika belum login)
       let guestName = "";
       let guestPhone = "";
       if (!currentUser) {
@@ -223,7 +305,7 @@
         guestPhone = guestPhoneEl ? guestPhoneEl.value.trim() : "";
 
         if (!guestName) {
-          alert("Silakan isi Nama Anda untuk pemesanan Guest.");
+          alert("Silakan isi Nama Anda untuk pemesanan.");
           guestNameEl && guestNameEl.focus();
           return;
         }
@@ -237,7 +319,7 @@
       try {
         // 4. CEK BENTROK JADWAL (Server-side real-time check)
         const checkConflictResponse = await fetch(`${API_URL}/api/bookings/check-conflict?date=${bookingDate}&time=${bookingTime}`);
-        if (!checkConflictResponse.ok) throw new Error("Gagal memeriksa konflik jadwal.");
+        if (!checkConflictResponse.ok) throw new Error("Gagal memeriksa bentrok jadwal.");
         
         const conflictData = await checkConflictResponse.json();
         if (conflictData.conflict) {
@@ -246,7 +328,7 @@
           return;
         }
 
-        // 5. KIRIM DATA KE BACKEND API
+        // 5. POST DATA KE BACKEND API
         const token = localStorage.getItem("humaira_token");
         const headers = { "Content-Type": "application/json" };
         if (token) headers["Authorization"] = `Bearer ${token}`;
@@ -266,9 +348,9 @@
         });
 
         const resData = await response.json();
-        if (!response.ok) throw new Error(resData.message || "Gagal menyimpan pesanan.");
+        if (!response.ok) throw new Error(resData.message || "Gagal menyimpan reservasi.");
 
-        // 6. SUKSES! FORMAT PESAN DAN REDIRECT KE WHATSAPP (Sesuai Permintaan)
+        // 6. FORMAT PESAN WHATSAPP & REDIRECT INSTAN
         const lines = selected.map(
           (item) => `- ${item.name} x${item.qty} = ${formatRupiah(item.subtotal)}`
         );
@@ -294,21 +376,17 @@
 
         const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(waMessage)}`;
         
-        // Reset form inputs & kuantitas secara manual agar bersih ketika pengguna menekan tombol kembali
-        bookingDateEl.value = "";
-        bookingTimeEl.value = "";
-        const nameInput = document.getElementById("customerName");
-        const phoneInput = document.getElementById("customerPhone");
-        if (nameInput) nameInput.value = "";
-        if (phoneInput) phoneInput.value = "";
-        document.querySelectorAll(".qty-input").forEach((input) => {
-          input.value = "0";
-        });
-        document.querySelectorAll(".service-card").forEach((card) => {
-          card.classList.remove("selected");
-        });
-        
-        // Gunakan window.location.href alih-alih window.open agar tidak diblokir oleh Popup Blocker browser setelah aksi asinkron (fetch)
+        // Reset state & form inputs
+        selectedQuantities = {};
+        if (bookingDateEl) bookingDateEl.value = "";
+        if (bookingTimeEl) bookingTimeEl.value = "";
+        if (guestNameEl) guestNameEl.value = "";
+        if (guestPhoneEl) guestPhoneEl.value = "";
+
+        renderServices();
+        updateCheckout();
+
+        // Redirect langsung ke WhatsApp
         window.location.href = waUrl;
 
       } catch (error) {

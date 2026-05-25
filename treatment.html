@@ -4,14 +4,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pilih Treatment</title>
+  <title>Reservasi & Booking Layanan - Humaira Salon & Wedding</title>
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+  <!-- NAVBAR LUXURY -->
   <header class="navbar">
-    <div class="logo-text">
+    <div class="logo-text" onclick="window.location.href='index.html'">
       <h1>Humaira Salon</h1>
       <p>Your Daily Beauty Partner</p>
     </div>
@@ -24,25 +31,89 @@
     </nav>
   </header>
 
-  <section class="treatment-page">
-    <div class="card-container">
-      <a class="card" href="harga-rambut.html">
-        <img src="images/rambut.jpg" alt="Perawatan Rambut">
-        <div class="card-text">Perawatan Rambut</div>
-      </a>
+  <!-- UNIFIED BOOKING DASHBOARD -->
+  <main class="price-page">
+    <section class="price-card">
+      <div class="price-header">
+        <h2>Humaira Booking Center</h2>
+        <p>Silakan pilih kategori perawatan, pilih layanan yang Anda inginkan, tentukan jadwal, lalu kirim reservasi langsung ke WhatsApp.</p>
+      </div>
 
-      <a class="card" href="harga-wedding.html">
-        <img src="images/wedding.jpg" alt="Paket Wedding">
-        <div class="card-text">Paket Wedding</div>
-      </a>
+      <!-- Category Tabs -->
+      <div class="category-tabs">
+        <button class="category-tab active" data-category="rambut">💇‍♀️ Perawatan Rambut</button>
+        <button class="category-tab" data-category="spa">🌸 Perawatan SPA</button>
+        <button class="category-tab" data-category="wedding">💍 Paket Wedding</button>
+      </div>
 
-      <a class="card" href="harga-spa.html">
-        <img src="images/spa.png" alt="Perawatan SPA">
-        <div class="card-text">Perawatan SPA</div>
-      </a>
-    </div>
-  </section>
+      <!-- Two Column Booking Layout -->
+      <div class="booking-grid">
+        
+        <!-- Left: Services List -->
+        <div class="services-column">
+          <div class="service-list" id="serviceList">
+            <p style="text-align: center; padding: 30px; opacity: 0.8; font-style: italic;">Memuat daftar layanan premium...</p>
+          </div>
+        </div>
 
+        <!-- Right: Booking Form & Checkout -->
+        <div class="checkout-column">
+          <h3 style="font-family: var(--font-heading); font-size: 22px; color: var(--accent-gold-glow); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;">Detail Reservasi</h3>
+
+          <!-- MEMBER WELCOME BANNER -->
+          <p id="memberWelcome" style="display: none; background: rgba(255,255,255,0.08); padding: 12px 18px; border-radius: 14px; margin-bottom: 20px; font-weight: 500; font-size: 14px; text-align: center; border: 1px dashed rgba(212, 175, 55, 0.3); color: var(--accent-gold-glow);"></p>
+
+          <!-- GUEST INFO SECTION (Hanya jika belum login) -->
+          <div id="guestInfoSection" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px;">
+            <div class="field-group" style="padding: 10px 14px;">
+              <label for="guestName">Nama Anda (Tamu)</label>
+              <input type="text" id="guestName" placeholder="Masukkan nama lengkap Anda">
+            </div>
+            <div class="field-group" style="padding: 10px 14px;">
+              <label for="guestPhone">Nomor WhatsApp</label>
+              <input type="text" id="guestPhone" placeholder="Contoh: 089646946880">
+            </div>
+          </div>
+
+          <!-- DATE & TIME SELECTION -->
+          <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px;">
+            <div class="field-group" style="padding: 10px 14px;">
+              <label for="bookingDate">Tanggal Booking</label>
+              <input type="date" id="bookingDate">
+            </div>
+            <div class="field-group" style="padding: 10px 14px;">
+              <label for="bookingTime">Jam Booking</label>
+              <input type="time" id="bookingTime">
+            </div>
+          </div>
+
+          <!-- SELECTED SERVICES CART SUMMARY -->
+          <div id="cartSummary" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="font-size: 13px; color: var(--accent-gold-glow); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Layanan Terpilih</h4>
+            <div id="cartItemsList" style="display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto;">
+              <p style="font-size: 13px; opacity: 0.6; font-style: italic;">Belum ada layanan yang dipilih</p>
+            </div>
+          </div>
+
+          <!-- Checkout Box -->
+          <div class="checkout-box" style="margin-top: 0; padding: 18px;">
+            <div class="total-line" style="margin-bottom: 15px;">
+              <span>Total</span>
+              <strong id="grandTotal" style="font-size: 26px;">Rp0</strong>
+            </div>
+            <button id="bookingBtn" class="wa-btn" type="button">
+              💬 Booking Now via WhatsApp
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <script src="booking.js"></script>
 </body>
 
 </html>
