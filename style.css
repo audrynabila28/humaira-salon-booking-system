@@ -1021,8 +1021,12 @@ nav a.active::after {
   }
 
   .price-card {
-    padding: 25px 20px;
+    padding: 25px 16px;
     border-radius: 24px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .price-header h2 {
@@ -1036,16 +1040,10 @@ nav a.active::after {
   .booking-grid {
     grid-template-columns: 1fr;
     gap: 25px;
-  }
-
-  .category-tabs {
-    flex-direction: column;
-    border-radius: 20px;
-    padding: 8px;
-  }
-
-  .category-tab {
-    padding: 10px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .booking-meta {
@@ -1251,14 +1249,19 @@ nav a.active::after {
 
   /* Category tabs in mobile row compact layout */
   .category-tabs {
+    display: flex !important;
     flex-direction: row !important;
-    overflow-x: auto;
-    white-space: nowrap;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
     border-radius: 50px;
     padding: 6px;
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     margin-bottom: 15px;
-    -webkit-overflow-scrolling: touch;
+    min-width: 0 !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .category-tabs::-webkit-scrollbar {
@@ -1269,5 +1272,6 @@ nav a.active::after {
     flex: 0 0 auto !important;
     padding: 10px 16px !important;
     font-size: 13px !important;
+    white-space: nowrap !important;
   }
 }
