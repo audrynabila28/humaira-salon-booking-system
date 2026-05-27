@@ -628,18 +628,10 @@
         </div>
 
         <!-- Metrics Panel -->
-        <div class="stats-grid">
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
           <div class="stat-card">
-            <p>Total Omzet (Done & Confirmed)</p>
+            <p>Total Omzet (Done)</p>
             <h3 id="statRevenue">Rp0</h3>
-          </div>
-          <div class="stat-card">
-            <p>Booking Menunggu (Pending)</p>
-            <h3 id="statPending" style="color: #f59e0b;">0</h3>
-          </div>
-          <div class="stat-card">
-            <p>Booking Dikonfirmasi (Confirmed)</p>
-            <h3 id="statConfirmed" style="color: #3b82f6;">0</h3>
           </div>
           <div class="stat-card">
             <p>Booking Selesai (Done)</p>
@@ -1064,8 +1056,6 @@
 
         // Tampilkan metrik
         document.getElementById("statRevenue").textContent = formatRupiah(data.stats.totalRevenue);
-        document.getElementById("statPending").textContent = data.stats.pendingCount;
-        document.getElementById("statConfirmed").textContent = data.stats.confirmedCount;
         document.getElementById("statDone").textContent = data.stats.doneCount;
 
         // Tampilkan newsletter subscribers
@@ -1123,7 +1113,10 @@
               <td><strong>${formatRupiah(b.total_price)}</strong></td>
               <td><span class="status-tag ${statusClass}">${b.status}</span></td>
               <td>
-                <button class="act-btn cancel" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgb(239, 68, 68); color: #ff8b8b; padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 4px;" onclick="deleteBookingPermanently(${b.id})">🗑️ Hapus</button>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  ${b.status !== 'Done' ? `<button class="act-btn done" style="background: #10b981; color: white; padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: none; border-radius: 8px;" onclick="updateBookingStatus(${b.id}, 'Done')">✓ Selesai</button>` : ''}
+                  <button class="act-btn cancel" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgb(239, 68, 68); color: #ff8b8b; padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 8px;" onclick="deleteBookingPermanently(${b.id})">🗑️ Hapus</button>
+                </div>
               </td>
             </tr>
           `;
