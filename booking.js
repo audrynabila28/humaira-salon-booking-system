@@ -355,25 +355,6 @@
         const resData = await response.json();
         if (!response.ok) throw new Error(resData.message || "Gagal menyimpan reservasi.");
 
-        // Simpan ke localStorage untuk pelacakan riwayat booking
-        try {
-          const localData = localStorage.getItem("humaira_local_bookings");
-          let guestIds = [];
-          if (localData) {
-            guestIds = JSON.parse(localData);
-          }
-          if (!guestIds.includes(resData.bookingId)) {
-            guestIds.push(resData.bookingId);
-            localStorage.setItem("humaira_local_bookings", JSON.stringify(guestIds));
-          }
-          // Refresh badge lonceng jika fungsi notifikasi global terpasang
-          if (window.refreshBookingNotificationBadge) {
-            window.refreshBookingNotificationBadge();
-          }
-        } catch (e) {
-          console.error("Gagal menyimpan ID booking ke local storage:", e);
-        }
-
         // 6. FORMAT PESAN WHATSAPP & REDIRECT INSTAN
         const lines = selected.map(
           (item) => `- ${item.name} x${item.qty} = ${formatRupiah(item.subtotal)}`
