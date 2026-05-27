@@ -270,6 +270,11 @@
         updateCheckout(); // Update ulang keranjang
       });
     });
+
+    // Update Floating Cart Bar dan badge langkah di mobile
+    if (typeof updateFloatingCartVisibility === "function") {
+      updateFloatingCartVisibility();
+    }
   }
 
   // SUBMIT BOOKING RESERVASI
@@ -350,6 +355,25 @@
         const resData = await response.json();
         if (!response.ok) throw new Error(resData.message || "Gagal menyimpan reservasi.");
 
+        // Simpan ke localStorage untuk pelacakan riwayat booking
+        try {
+          const localData = localStorage.getItem("humaira_local_bookings");
+          let guestIds = [];
+          if (localData) {
+            guestIds = JSON.parse(localData);
+          }
+          if (!guestIds.includes(resData.bookingId)) {
+            guestIds.push(resData.bookingId);
+            localStorage.setItem("humaira_local_bookings", JSON.stringify(guestIds));
+          }
+          // Refresh badge lonceng jika fungsi notifikasi global terpasang
+          if (window.refreshBookingNotificationBadge) {
+            window.refreshBookingNotificationBadge();
+          }
+        } catch (e) {
+          console.error("Gagal menyimpan ID booking ke local storage:", e);
+        }
+
         // 6. FORMAT PESAN WHATSAPP & REDIRECT INSTAN
         const lines = selected.map(
           (item) => `- ${item.name} x${item.qty} = ${formatRupiah(item.subtotal)}`
@@ -395,6 +419,138 @@
     });
   }
 
+  // ==========================================
+  // DESAIN UX KHUSUS HANDPHONE (MOBILE UX REVAMP)
+  // ==========================================
+  let isMobileView = false;
+  let activeMobileStep = 'services'; // 'services' atau 'checkout'
+
+  function setupMobileBookingSteps() {
+    isMobileView = window.innerWidth <= 768;
+    if (!isMobileView) return;
+
+    const priceCard = document.querySelector(".price-card");
+    if (!priceCard) return;
+
+    // 1. Injeksi Step Tabs di atas
+    const stepsContainer = document.createElement("div");
+    stepsContainer.className = "mobile-booking-steps";
+    stepsContainer.innerHTML = `
+      <button class="step-tab active" id="btnStepServices" type="button">1. Pilih Layanan</button>
+      <button class="step-tab" id="btnStepCheckout" type="button">2. Isi Reservasi <span id="mobileCartBadge" class="mobile-cart-badge" style="display: none;">0</span></button>
+    `;
+
+    const priceHeader = priceCard.querySelector(".price-header");
+    if (priceHeader) {
+      priceHeader.after(stepsContainer);
+    } else {
+      priceCard.prepend(stepsContainer);
+    }
+
+    // 2. Injeksi Floating Bottom Cart Bar
+    if (!document.getElementById("floatingCartBar")) {
+      const cartBar = document.createElement("div");
+      cartBar.className = "floating-cart-bar";
+      cartBar.id = "floatingCartBar";
+      cartBar.innerHTML = `
+        <div class="floating-cart-info">
+          <span id="floatingCartQty">0 Layanan Terpilih</span>
+          <strong id="floatingCartTotal">Rp0</strong>
+        </div>
+        <button class="floating-cart-btn" id="floatingCartBtn" type="button">Lanjut Reservasi ➔</button>
+      `;
+      document.body.appendChild(cartBar);
+
+      // Event listener tombol lanjut
+      document.getElementById("floatingCartBtn").addEventListener("click", () => {
+        switchMobileStep('checkout');
+      });
+    }
+
+    // 3. Event listener tab
+    document.getElementById("btnStepServices").addEventListener("click", () => {
+      switchMobileStep('services');
+    });
+    document.getElementById("btnStepCheckout").addEventListener("click", () => {
+      switchMobileStep('checkout');
+    });
+
+    // Tampilan Awal
+    switchMobileStep('services');
+  }
+
+  function switchMobileStep(step) {
+    if (!isMobileView) return;
+    activeMobileStep = step;
+
+    const servicesCol = document.querySelector(".services-column");
+    const checkoutCol = document.querySelector(".checkout-column");
+    const categoryTabs = document.querySelector(".category-tabs");
+    const btnServices = document.getElementById("btnStepServices");
+    const btnCheckout = document.getElementById("btnStepCheckout");
+    const cartBar = document.getElementById("floatingCartBar");
+
+    if (step === 'services') {
+      if (servicesCol) servicesCol.style.display = "block";
+      if (categoryTabs) categoryTabs.style.display = "flex";
+      if (checkoutCol) checkoutCol.style.display = "none";
+
+      if (btnServices) btnServices.classList.add("active");
+      if (btnCheckout) btnCheckout.classList.remove("active");
+
+      updateFloatingCartVisibility();
+    } else {
+      if (servicesCol) servicesCol.style.display = "none";
+      if (categoryTabs) categoryTabs.style.display = "none";
+      if (checkoutCol) checkoutCol.style.display = "block";
+
+      if (btnServices) btnServices.classList.remove("active");
+      if (btnCheckout) btnCheckout.classList.add("active");
+
+      if (cartBar) cartBar.style.display = "none";
+
+      // Scroll ke atas price card
+      const priceCard = document.querySelector(".price-card");
+      if (priceCard) {
+        priceCard.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }
+
+  function updateFloatingCartVisibility() {
+    if (!isMobileView) return;
+    const selected = getSelectedItems();
+    const cartBar = document.getElementById("floatingCartBar");
+    const qtyBadge = document.getElementById("mobileCartBadge");
+
+    if (selected.length === 0) {
+      if (cartBar) cartBar.style.display = "none";
+      if (qtyBadge) qtyBadge.style.display = "none";
+    } else {
+      const totalQty = selected.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = selected.reduce((sum, item) => sum + item.subtotal, 0);
+
+      if (qtyBadge) {
+        qtyBadge.textContent = String(totalQty);
+        qtyBadge.style.display = "inline-flex";
+      }
+
+      const qtyEl = document.getElementById("floatingCartQty");
+      const totalEl = document.getElementById("floatingCartTotal");
+      if (qtyEl) qtyEl.textContent = `${totalQty} Layanan Terpilih`;
+      if (totalEl) totalEl.textContent = formatRupiah(totalPrice);
+
+      if (cartBar && activeMobileStep === 'services') {
+        cartBar.style.display = "flex";
+      } else if (cartBar) {
+        cartBar.style.display = "none";
+      }
+    }
+  }
+
   // Jalankan inisialisasi awal
   init();
+  
+  // Daftarkan mobile steps setelah data terambil
+  setupMobileBookingSteps();
 })();

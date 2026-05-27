@@ -509,6 +509,28 @@ app.get('/api/bookings/my', authenticateJWT, async (req, res) => {
   }
 });
 
+// Publik/Customer: Melacak status booking tertentu berdasarkan daftar ID (berguna untuk Guest)
+app.get('/api/bookings/track', async (req, res) => {
+  try {
+    const { ids } = req.query;
+    if (!ids) {
+      return res.json([]);
+    }
+    const idArray = ids.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+    if (idArray.length === 0) {
+      return res.json([]);
+    }
+    const bookings = await Booking.findAll({
+      where: { id: idArray },
+      include: [BookingItem],
+      order: [['id', 'DESC']]
+    });
+    res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal melacak booking.', error: error.message });
+  }
+});
+
 // ==========================================
 // ROUTE API 4: DASHBOARD ADMIN ONLY
 // ==========================================
@@ -543,6 +565,31 @@ app.patch('/api/bookings/:id/status', authenticateJWT, isAdmin, async (req, res)
     res.json({ message: `Status booking #${booking.id} berhasil diubah ke ${status}.`, booking });
   } catch (error) {
     res.status(500).json({ message: 'Gagal mengubah status booking.', error: error.message });
+  }
+});
+
+// Admin-Only: Menghapus data booking secara permanen
+app.delete('/api/bookings/:id', authenticateJWT, isAdmin, async (req, res) => {
+  try {
+    const booking = await Booking.findByPk(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ message: 'Data booking tidak ditemukan.' });
+    }
+    await booking.destroy();
+    res.json({ message: `Reservasi #HMS-${req.params.id} berhasil dihapus secara permanen.` });
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal menghapus booking.', error: error.message });
+  }
+});
+
+// Admin-Only: Mulai ulang bulanan (Hapus semua booking secara permanen)
+app.delete('/api/bookings/admin/reset', authenticateJWT, isAdmin, async (req, res) => {
+  try {
+    await BookingItem.destroy({ where: {} });
+    await Booking.destroy({ where: {} });
+    res.json({ message: 'Seluruh data reservasi berhasil dikosongkan (Restart Bulanan).' });
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal melakukan restart bulanan.', error: error.message });
   }
 });
 
