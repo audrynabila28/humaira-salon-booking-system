@@ -62,5 +62,3 @@ Proyek ini diselesaikan secara kolaboratif sebagai bagian dari portofolio profes
 *   **Hosting**: Vercel.
 
 ---
-
-## 📂 Struktur Direktori Proyek
