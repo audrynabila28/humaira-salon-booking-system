@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karir & Lowongan Kerja - Humaira Salon & Wedding</title>
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR LUXURY -->
+  <header class="navbar">
+    <div class="logo-text" onclick="window.location.href='index.html'">
+      <h1>Humaira Salon</h1>
+      <p>Your Daily Beauty Partner</p>
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="treatment.html">Treatment</a>
+      <a href="konsultasi.html">Konsultasi</a>
+      <a href="about.html">About Us</a>
+      <a href="rekrutmen.html" class="active">Join Us</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <!-- REKRUTMEN CORE -->
+  <main class="price-page">
+    <section class="price-card" style="max-width: 650px;">
+      <div class="price-header" style="text-align: center;">
+        <h2>Bergabung Bersama Kami</h2>
+        <p>Apakah Anda bertalenta di bidang kecantikan, tata rias, atau spa? Kirimkan berkas lamaran Anda hari ini dan jadilah bagian dari tim Humaira Salon.</p>
+      </div>
+
+      <form id="careerForm" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+        
+        <!-- Nama Lengkap -->
+        <div class="field-group">
+          <label for="applicantName">Nama Lengkap</label>
+          <input type="text" id="applicantName" placeholder="Masukkan nama lengkap Anda" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <!-- Email -->
+          <div class="field-group">
+            <label for="applicantEmail">Email</label>
+            <input type="email" id="applicantEmail" placeholder="nama@email.com" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+          </div>
+          <!-- WhatsApp -->
+          <div class="field-group">
+            <label for="applicantPhone">Nomor WhatsApp</label>
+            <input type="text" id="applicantPhone" placeholder="Contoh: 089695858900" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <!-- Posisi yang Dilamar -->
+          <div class="field-group">
+            <label for="applicantPosition">Posisi Kerja</label>
+            <select id="applicantPosition" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: var(--primary-color); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; cursor: pointer; font-family: var(--font-body);">
+              <option value="" disabled selected style="background: var(--primary-color);">Pilih posisi...</option>
+              <option value="Kapster / Hair Stylist" style="background: var(--primary-color);">💇‍♀️ Kapster / Hair Stylist</option>
+              <option value="Therapist SPA" style="background: var(--primary-color);">🌸 Therapist SPA</option>
+              <option value="Makeup Artist (MUA)" style="background: var(--primary-color);">💄 Makeup Artist (MUA)</option>
+              <option value="Kasir & Administrasi" style="background: var(--primary-color);">💵 Kasir & Administrasi</option>
+            </select>
+          </div>
+          <!-- Link CV -->
+          <div class="field-group">
+            <label for="applicantCV">Tautan CV / Portfolio</label>
+            <input type="url" id="applicantCV" placeholder="Tautan Google Drive / Dropbox" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+          </div>
+        </div>
+
+        <!-- Deskripsi Pengalaman -->
+        <div class="field-group">
+          <label for="applicantExperience">Riwayat Pengalaman Singkat</label>
+          <textarea id="applicantExperience" rows="4" placeholder="Ceritakan singkat mengenai keahlian dan pengalaman kerja Anda di bidang ini..." required style="width: 100%; border: none; border-radius: 12px; padding: 12px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; font-family: var(--font-body); resize: none;"></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button id="submitBtn" class="wa-btn" type="submit" style="margin-top: 15px; font-family: var(--font-body); font-weight: 600; letter-spacing: 0.5px;">
+          ✉️ Kirim Berkas Lamaran
+        </button>
+
+      </form>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('careerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Mengirim berkas...';
+
+      const payload = {
+        name: document.getElementById('applicantName').value.trim(),
+        email: document.getElementById('applicantEmail').value.trim(),
+        phone: document.getElementById('applicantPhone').value.trim(),
+        position: document.getElementById('applicantPosition').value,
+        cv_link: document.getElementById('applicantCV').value.trim(),
+        experience: document.getElementById('applicantExperience').value.trim()
+      };
+
+      const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : '';
+      try {
+        const response = await fetch(`${API_URL}/api/applications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+ 
+        if (!response.ok) {
+          let errMsg = 'Gagal mengirim lamaran.';
+          try {
+            const errData = await response.json();
+            errMsg = errData.message || errMsg;
+          } catch (e) {
+            try {
+              const text = await response.text();
+              if (text.includes('<pre>')) {
+                const match = text.match(/<pre>([\s\S]*?)<\/pre>/);
+                if (match) errMsg = match[1].replace(/<br>/g, '\n').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'");
+              } else {
+                errMsg = `Error ${response.status}: ${response.statusText}`;
+              }
+            } catch (e2) {}
+          }
+          throw new Error(errMsg);
+        }
+
+        const resData = await response.json();
+
+        alert('Selamat! Berkas lamaran Anda berhasil terkirim. Mohon tunggu konfirmasi admin di WhatsApp Anda.');
+        document.getElementById('careerForm').reset();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '✉️ Kirim Berkas Lamaran';
+      }
+    });
+  </script>
+</body>
+
+</html>

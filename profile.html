@@ -231,9 +231,9 @@
     /* TABS UTAMA ADMIN */
     .admin-tabs {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 25px;
-      overflow-x: auto;
       padding-bottom: 5px;
     }
 
@@ -287,34 +287,35 @@
       background: rgba(255, 255, 255, 0.03);
     }
 
-    /* STATUS TAGS */
-    .status-tag {
+    /* STATUS TAGS & BADGES */
+    .status-tag, .status-badge {
       padding: 6px 12px;
       border-radius: 50px;
       font-size: 12px;
       font-weight: 700;
       display: inline-block;
+      text-align: center;
     }
 
-    .status-tag.pending {
+    .status-tag.pending, .status-badge.pending {
       background: rgba(245, 158, 11, 0.2);
       color: #f59e0b;
       border: 1px solid rgba(245, 158, 11, 0.3);
     }
 
-    .status-tag.confirmed {
+    .status-tag.confirmed, .status-badge.confirmed {
       background: rgba(59, 130, 246, 0.2);
       color: #3b82f6;
       border: 1px solid rgba(59, 130, 246, 0.3);
     }
 
-    .status-tag.done {
+    .status-tag.done, .status-badge.done {
       background: rgba(16, 185, 129, 0.2);
       color: #10b981;
       border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
-    .status-tag.cancelled {
+    .status-tag.cancelled, .status-badge.cancelled {
       background: rgba(239, 68, 68, 0.2);
       color: #ef4444;
       border: 1px solid rgba(239, 68, 68, 0.3);
@@ -502,7 +503,9 @@
     <nav>
       <a href="index.html">Home</a>
       <a href="treatment.html">Treatment</a>
+      <a href="konsultasi.html">Konsultasi</a>
       <a href="about.html">About Us</a>
+      <a href="rekrutmen.html">Join Us</a>
       <a href="profile.html" class="active">Profile</a>
     </nav>
   </header>
@@ -641,9 +644,11 @@
 
         <!-- Admin Tab Buttons -->
         <div class="admin-tabs">
-          <button id="adminTabBookings" class="admin-tab-btn active" onclick="switchAdminTab('bookings')">Daftar Reservasi Pelanggan</button>
-          <button id="adminTabCatalog" class="admin-tab-btn" onclick="switchAdminTab('catalog')">Kelola Harga Katalog</button>
-          <button id="adminTabEmails" class="admin-tab-btn" onclick="switchAdminTab('emails')">Email Langganan Promo</button>
+          <button id="adminTabBookings" class="admin-tab-btn active" onclick="switchAdminTab('bookings')">Reservasi Pelanggan</button>
+          <button id="adminTabCatalog" class="admin-tab-btn" onclick="switchAdminTab('catalog')">Katalog Jasa</button>
+          <button id="adminTabEmails" class="admin-tab-btn" onclick="switchAdminTab('emails')">Langganan Promo</button>
+          <button id="adminTabApplications" class="admin-tab-btn" onclick="switchAdminTab('applications')" style="background: rgba(255, 105, 180, 0.15); border: 1px dashed var(--accent-pink);">→ Dashboard Recruitment</button>
+          <button id="adminTabConsultations" class="admin-tab-btn" onclick="switchAdminTab('consultations')" style="background: rgba(255, 105, 180, 0.15); border: 1px dashed var(--accent-pink);">→ Dashboard Konsultasi</button>
         </div>
 
         <!-- ADMIN TAB 1: BOOKING LIST -->
@@ -727,6 +732,62 @@
           </div>
         </div>
 
+        <!-- ADMIN TAB 4: REKRUTMEN / CAREER MANAGEMENT (Tugas Mandiri Elan) -->
+        <div id="adminPanelApplications" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+            <h3>Daftar Pelamar Kerja (Karir Salon)</h3>
+            <span style="font-size: 13px; opacity: 0.8; background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);">Pekerjaan Mandiri Elan</span>
+          </div>
+          <p style="margin-bottom: 15px; font-size: 14px; opacity: 0.85;">Berikut adalah berkas pelamar kerja yang dikirim lewat formulir lowongan kerja website. Klik Detail untuk melihat riwayat dan memproses wawancara.</p>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Pelamar</th>
+                  <th>Posisi Dilamar</th>
+                  <th>Nomor WhatsApp</th>
+                  <th>Tautan CV</th>
+                  <th>Status</th>
+                  <th>Aksi Evaluasi</th>
+                </tr>
+              </thead>
+              <tbody id="adminAppTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; opacity: 0.7;">Memuat data berkas pelamar...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ADMIN TAB 5: KELOLA FORUM KONSULTASI (Tugas Mandiri Ara) -->
+        <div id="adminPanelConsultations" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+            <h3>Kelola Konsultasi & Tanya Jawab Forum</h3>
+            <span style="font-size: 13px; opacity: 0.8; background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);">Pekerjaan Mandiri Azzahra (Ara)</span>
+          </div>
+          <p style="margin-bottom: 15px; font-size: 14px; opacity: 0.85;">Berikut adalah daftar konsultasi yang masuk dari pelanggan. Jawab keluhan mereka atau tandai dengan ceklis selesai jika sudah tuntas terjawab.</p>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Penanya</th>
+                  <th>Kategori</th>
+                  <th>Detail Pertanyaan & Jawaban</th>
+                  <th>Status</th>
+                  <th>Aksi Evaluasi</th>
+                </tr>
+              </thead>
+              <tbody id="adminConsultTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; opacity: 0.7;">Memuat data konsultasi...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -795,7 +856,7 @@
        JAVASCRIPT APP LOGIC
        ========================================== -->
   <script>
-    const API_URL = ''; // Mengarah ke local origin
+    const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : ''; // Mengarah ke local origin
 
     // State data
     let currentUser = null;
@@ -1024,10 +1085,14 @@
       document.getElementById("adminTabBookings").classList.remove("active");
       document.getElementById("adminTabCatalog").classList.remove("active");
       document.getElementById("adminTabEmails").classList.remove("active");
+      document.getElementById("adminTabApplications").classList.remove("active");
+      document.getElementById("adminTabConsultations").classList.remove("active");
 
       document.getElementById("adminPanelBookings").style.display = "none";
       document.getElementById("adminPanelCatalog").style.display = "none";
       document.getElementById("adminPanelEmails").style.display = "none";
+      document.getElementById("adminPanelApplications").style.display = "none";
+      document.getElementById("adminPanelConsultations").style.display = "none";
 
       if (panel === 'bookings') {
         document.getElementById("adminTabBookings").classList.add("active");
@@ -1041,6 +1106,10 @@
         document.getElementById("adminTabEmails").classList.add("active");
         document.getElementById("adminPanelEmails").style.display = "block";
         loadAdminStats();
+      } else if (panel === 'applications') {
+        window.location.href = 'admin-rekrutmen.html';
+      } else if (panel === 'consultations') {
+        window.location.href = 'admin-konsultasi.html';
       }
     }
 
@@ -1074,6 +1143,226 @@
         }
       } catch (error) {
         console.error(error);
+      }
+    }
+
+    // 1B. LOAD DATA LAMARAN PEKERJAAN (Tugas Mandiri Elan)
+    async function loadAdminApplications() {
+      const token = localStorage.getItem("humaira_token");
+      const tbody = document.getElementById("adminAppTableBody");
+      if (!tbody) return;
+
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Gagal memuat berkas pelamar kerja.");
+        const apps = await response.json();
+
+        if (apps.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7;">Belum ada lamaran masuk di sistem.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = apps.map(app => {
+          let statusText = 'Pending';
+          let statusClass = 'pending';
+          if (app.status === 'Interview') {
+            statusText = 'Wawancara';
+            statusClass = 'confirmed';
+          }
+          if (app.status === 'Rejected') {
+            statusText = 'Ditolak';
+            statusClass = 'cancelled';
+          }
+
+          let actionButtons = '';
+          if (app.status === 'Pending') {
+            actionButtons = `
+              <button class="action-btn btn-confirm" onclick="updateApplicationStatus(${app.id}, 'Interview', '${app.name}')" style="margin-right: 5px;"> Wawancara</button>
+              <button class="action-btn btn-cancel" onclick="updateApplicationStatus(${app.id}, 'Rejected', '${app.name}')"> Tolak</button>
+            `;
+          } else if (app.status === 'Interview') {
+            actionButtons = `<span style="font-size: 12px; opacity: 0.8; word-break: break-all;">Link: <a href="${app.interview_link}" target="_blank" style="color: var(--accent-gold-glow); text-decoration: underline;">Buka Gmeet/WA VC</a></span>`;
+          } else {
+            actionButtons = `<span style="font-size: 12px; opacity: 0.6;">Selesai Evaluasi</span>`;
+          }
+
+          return `
+            <tr>
+              <td><strong>${app.name}</strong><br><span style="font-size: 11px; opacity: 0.8;">Exp: ${app.experience}</span></td>
+              <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${app.position}</span></td>
+              <td><a href="https://wa.me/${app.phone}" target="_blank" style="color: #25d366; text-decoration: none;">💬 ${app.phone}</a><br><span style="font-size: 11px; opacity: 0.8;">${app.email}</span></td>
+              <td><a href="${app.cv_link}" target="_blank" style="color: var(--accent-gold-glow); font-weight: 600; text-decoration: underline;">📄 Buka Berkas CV</a></td>
+              <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+              <td>${actionButtons}</td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (error) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ff8b8b;">${error.message}</td></tr>`;
+      }
+    }
+
+    // UPDATE STATUS LAMARAN & INPUT LINK WAWANCARA
+    async function updateApplicationStatus(id, newStatus, currentName) {
+      let interviewLink = null;
+      if (newStatus === 'Interview') {
+        interviewLink = prompt(`Pelamar "${currentName}" DITERIMA untuk tahap wawancara.\n\nSilakan masukkan tautan Google Meet atau tautan Video Call WhatsApp untuk sesi wawancara:`, `https://meet.google.com/`);
+        if (!interviewLink) {
+          alert('Pengubahan status dibatalkan. Tautan wawancara wajib diisi.');
+          return;
+        }
+      } else {
+        if (!confirm(`Apakah Anda yakin ingin menolak lamaran kerja dari "${currentName}"?`)) {
+          return;
+        }
+      }
+
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications/${id}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            status: newStatus,
+            interview_link: interviewLink
+          })
+        });
+
+        const resData = await response.json();
+        if (!response.ok) throw new Error(resData.message || 'Gagal mengubah status.');
+
+        alert(`Sukses memperbarui status pelamar! Notifikasi undangan wawancara otomatis dikirim ke WhatsApp pelamar.`);
+        loadAdminApplications();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // 1C. LOAD DATA FORUM KONSULTASI (Tugas Mandiri Azzahra)
+    async function loadAdminConsultations() {
+      const token = localStorage.getItem("humaira_token");
+      const tbody = document.getElementById("adminConsultTableBody");
+      if (!tbody) return;
+
+      try {
+        const response = await fetch(`${API_URL}/api/admin/consultations`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Gagal memuat kelola konsultasi forum.");
+        const list = await response.json();
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7;">Belum ada pertanyaan konsultasi masuk di sistem.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list.map((item, index) => {
+          let statusText = 'Pending';
+          let statusClass = 'pending';
+          if (item.status === 'Answered') {
+            statusText = 'Terjawab';
+            statusClass = 'confirmed';
+          }
+          if (item.status === 'Resolved') {
+            statusText = 'Selesai';
+            statusClass = 'done';
+          }
+
+          let actionButtons = '';
+          if (item.status === 'Pending') {
+            actionButtons = `
+              <button class="action-btn btn-confirm" onclick="answerConsultation(${item.id}, \`${item.question.replace(/`/g, '\\`').replace(/\n/g, ' ')}\`)" style="margin-right: 5px;"> Jawab</button>
+            `;
+          } else if (item.status === 'Answered') {
+            actionButtons = `
+              <button class="action-btn btn-confirm" onclick="answerConsultation(${item.id}, \`${item.question.replace(/`/g, '\\`').replace(/\n/g, ' ')}\`)" style="margin-right: 5px; background: #6b7280; border-color: #6b7280;"> Edit Jawab</button>
+              <button class="action-btn btn-done" onclick="resolveConsultation(${item.id})" style="background: #10b981; border-color: #10b981; color: white;"> ✓ Ceklis Selesai</button>
+            `;
+          } else {
+            actionButtons = `<span style="font-size: 12px; opacity: 0.6;">Tuntas Terjawab</span>`;
+          }
+
+          const qText = item.question;
+          const aText = item.answer ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); color: var(--accent-gold-glow); font-style: italic;"><strong>Jawab:</strong> "${item.answer}"</div>` : '';
+
+          return `
+            <tr>
+              <td>${index + 1}</td>
+              <td><strong>${item.customer_name}</strong><br><span style="font-size: 11px; opacity: 0.8;">${item.customer_email || '-'}</span></td>
+              <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${item.category}</span></td>
+              <td>
+                <div style="font-size: 13px; line-height: 1.4;">"${qText}"</div>
+                ${aText}
+              </td>
+              <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+              <td>${actionButtons}</td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (error) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ff8b8b;">${error.message}</td></tr>`;
+      }
+    }
+
+    // JAWAB KONSULTASI VIA PROMPT
+    async function answerConsultation(id, currentQuestion) {
+      const answer = prompt(`Pertanyaan Pelanggan:\n"${currentQuestion}"\n\nMasukkan jawaban / saran perawatan kecantikan dari salon:`);
+      if (answer === null) return; // Batal
+      if (answer.trim() === '') {
+        alert('Jawaban wajib diisi.');
+        return;
+      }
+
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/consultations/${id}/answer`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ answer })
+        });
+
+        const resData = await response.json();
+        if (!response.ok) throw new Error(resData.message || 'Gagal menyimpan jawaban.');
+
+        alert('Sukses menyimpan jawaban konsultasi!');
+        loadAdminConsultations();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // TANDAI CEKLIS SELESAI
+    async function resolveConsultation(id) {
+      if (!confirm('Apakah Anda yakin ingin menandai konsultasi ini selesai dan tuntas terjawab (Resolved)?')) {
+        return;
+      }
+
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/consultations/${id}/resolve`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const resData = await response.json();
+        if (!response.ok) throw new Error(resData.message || 'Gagal menyelesaikan konsultasi.');
+
+        alert('Konsultasi berhasil ditutup dan ditandai selesai!');
+        loadAdminConsultations();
+      } catch (err) {
+        alert(err.message);
       }
     }
 

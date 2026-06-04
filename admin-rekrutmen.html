@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Recruitment - Humaira Salon</title>
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .profile-page {
+      min-height: 100vh;
+      background: url('images/bg.jpg') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 16px;
+      position: relative;
+    }
+
+    .profile-page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(5px);
+      z-index: 1;
+    }
+
+    .profile-container {
+      position: relative;
+      z-index: 2;
+      width: min(1100px, 100%);
+      background: rgba(141, 95, 95, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      padding: 40px;
+      color: #fff;
+      animation: fadeUp 0.8s ease;
+    }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .dash-header h2 {
+      font-size: 28px;
+      font-family: var(--font-heading);
+      color: var(--accent-gold-glow);
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-3px);
+    }
+
+    /* STATS CARD */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .stat-card p {
+      font-size: 14px;
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+
+    .stat-card h3 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    /* DATA TABLES */
+    .section-title {
+      font-size: 20px;
+      font-family: var(--font-heading);
+      margin-bottom: 15px;
+      border-left: 4px solid var(--accent-gold);
+      padding-left: 10px;
+      color: var(--accent-gold-glow);
+    }
+
+    .table-container {
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow-x: auto;
+      margin-bottom: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px 18px;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* BADGES */
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-badge.interview {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .status-badge.rejected {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-badge.accepted {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* BUTTONS */
+    .action-btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-wa {
+      background: linear-gradient(135deg, #25d366, #128c7e);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+
+    .btn-wa:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .btn-icon.check {
+      background: #10b981;
+    }
+
+    .btn-icon.check:hover {
+      background: #059669;
+      transform: scale(1.08);
+    }
+
+    .btn-icon.cross {
+      background: #ef4444;
+    }
+
+    .btn-icon.cross:hover {
+      background: #dc2626;
+      transform: scale(1.08);
+    }
+
+    /* MODAL WINDOWS */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-content {
+      background: #8d5f5f;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      max-width: 550px;
+      width: 100%;
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+      color: white;
+      animation: zoomIn 0.3s ease;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+
+    .modal-close:hover {
+      opacity: 1;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      opacity: 0.95;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .form-group select option {
+      background: #8d5f5f;
+      color: white;
+    }
+
+    .modal-submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+
+    .modal-submit-btn:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="profile-page">
+    <div class="profile-container">
+
+      <!-- Header Dashboard -->
+      <div class="dash-header">
+        <div>
+          <a href="profile.html" class="back-btn">← Dashboard Utama</a>
+        </div>
+        <h2>👥 Dashboard Recruitment</h2>
+        <div>
+          <button class="logout-btn" onclick="handleLogout()">Keluar Admin</button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <p>Total Pelamar Kerja Diterima</p>
+          <h3 id="statAccepted">0</h3>
+        </div>
+      </div>
+
+      <!-- MAIN TABLE: ACTIVE APPLICANTS -->
+      <div class="section-title">Daftar Berkas Pelamar Masuk</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Pelamar & Pengalaman</th>
+              <th>Posisi Dilamar</th>
+              <th>Informasi Kontak</th>
+              <th>Tautan CV</th>
+              <th>Status</th>
+              <th>Aksi Evaluasi</th>
+            </tr>
+          </thead>
+          <tbody id="activeAppTableBody">
+            <tr>
+              <td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Memuat berkas pelamar...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- HISTORY TABLE: ACCEPTED EMPLOYEES -->
+      <div class="section-title">Riwayat Rekrutmen (Karyawan Baru Diterima)</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Pelamar</th>
+              <th>Posisi</th>
+              <th>Kontak</th>
+              <th>Jadwal Interview / Detail</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="historyAppTableBody">
+            <tr>
+              <td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Belum ada riwayat pelamar diterima.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHATSAPP DECISION MODAL -->
+  <div id="waModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 style="font-family: var(--font-heading); color: var(--accent-gold-glow); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Kirim Keputusan via WhatsApp</h3>
+      
+      <form id="waForm" onsubmit="handleSendDecision(event)">
+        <input type="hidden" id="modalAppId">
+        
+        <div class="form-group">
+          <label>Nama Pelamar</label>
+          <input type="text" id="modalAppName" readonly style="opacity: 0.8; background: rgba(0,0,0,0.1);">
+        </div>
+
+        <div class="form-group">
+          <label for="modalDecision">Keputusan Lamaran</label>
+          <select id="modalDecision" required onchange="toggleInterviewFields(this.value)">
+            <option value="Accepted">✅ Terima & Jadwalkan Wawancara</option>
+            <option value="Rejected">❌ Tolak Lamaran (Sopan)</option>
+          </select>
+        </div>
+
+        <!-- Acceptance Fields -->
+        <div id="interviewFields">
+          <div class="form-group">
+            <label for="modalDate">Tanggal Wawancara</label>
+            <input type="date" id="modalDate" required>
+          </div>
+          <div class="form-group">
+            <label for="modalTime">Jam Wawancara (WIB)</label>
+            <input type="time" id="modalTime" required>
+          </div>
+          <div class="form-group">
+            <label for="modalLink">Link Google Meet / Video Call</label>
+            <input type="url" id="modalLink" value="https://meet.google.com/" required placeholder="https://meet.google.com/abc-defg-hij">
+          </div>
+        </div>
+
+        <button type="submit" id="modalSubmitBtn" class="modal-submit-btn">💬 Kirim Notifikasi WA</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : '';
+
+    // Auth Guard Client-Side
+    (async function checkAuth() {
+      const token = localStorage.getItem("humaira_token");
+      if (!token) {
+        alert("Akses ditolak! Anda harus masuk sebagai admin.");
+        window.location.href = "profile.html";
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API_URL}/api/auth/me`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Invalid Session");
+        const data = await res.json();
+        if (data.role !== 'admin') throw new Error("Not Authorized");
+      } catch (err) {
+        alert("Sesi admin tidak valid. Silakan login kembali.");
+        localStorage.removeItem("humaira_token");
+        localStorage.removeItem("humaira_user");
+        window.location.href = "profile.html";
+      }
+    })();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadData();
+    });
+
+    async function loadData() {
+      const token = localStorage.getItem("humaira_token");
+      const activeTbody = document.getElementById("activeAppTableBody");
+      const historyTbody = document.getElementById("historyAppTableBody");
+      const statAcceptedEl = document.getElementById("statAccepted");
+
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.message || "Gagal mengambil data pelamar.");
+        }
+        const list = await response.json();
+
+        // 1. Separate Active vs Accepted History
+        const activeList = list.filter(app => app.status !== 'Accepted');
+        const acceptedList = list.filter(app => app.status === 'Accepted');
+
+        // Update statistics counter
+        statAcceptedEl.textContent = acceptedList.length;
+
+        // 2. Render Active Applicants Table
+        if (activeList.length === 0) {
+          activeTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Tidak ada berkas pelamar aktif.</td></tr>`;
+        } else {
+          activeTbody.innerHTML = activeList.map(app => {
+            let badgeClass = 'pending';
+            let badgeText = 'Pending';
+            if (app.status === 'Interview') {
+              badgeClass = 'interview';
+              badgeText = 'Wawancara';
+            } else if (app.status === 'Rejected') {
+              badgeClass = 'rejected';
+              badgeText = 'Ditolak';
+            }
+
+            return `
+              <tr>
+                <td>
+                  <strong>${app.name}</strong>
+                  <div style="font-size: 11px; opacity: 0.8; margin-top: 4px; max-width: 250px; white-space: normal; line-height: 1.4;">
+                    Exp: ${app.experience}
+                  </div>
+                </td>
+                <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${app.position}</span></td>
+                <td>
+                  <a href="https://wa.me/${app.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #25d366; text-decoration: none; font-weight: 500;">💬 ${app.phone}</a>
+                  <div style="font-size: 11px; opacity: 0.8; margin-top: 2px;">${app.email}</div>
+                </td>
+                <td><a href="${app.cv_link}" target="_blank" style="color: var(--accent-gold-glow); font-weight: 600; text-decoration: underline;">📄 Buka Berkas CV</a></td>
+                <td><span class="status-badge ${badgeClass}">${badgeText}</span></td>
+                <td>
+                  <div class="action-btn-group">
+                    <button class="btn-wa" onclick="openWAModal(${app.id}, '${app.name}')">💬 Kirim WA</button>
+                    <button class="btn-icon check" title="Terima Resmi" onclick="acceptApplicant(${app.id})">✓</button>
+                    <button class="btn-icon cross" title="Hapus Berkas" onclick="deleteApplicant(${app.id})">✗</button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        // 3. Render Accepted Employees History Table
+        if (acceptedList.length === 0) {
+          historyTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Belum ada riwayat rekrutmen.</td></tr>`;
+        } else {
+          historyTbody.innerHTML = acceptedList.map(app => {
+            const dateStr = app.interview_date || '-';
+            const timeStr = app.interview_time || '-';
+            const linkMarkup = app.interview_link ? `<a href="${app.interview_link}" target="_blank" style="color: var(--accent-gold-glow); text-decoration: underline;">Buka Link Meet</a>` : '-';
+
+            return `
+              <tr>
+                <td><strong>${app.name}</strong></td>
+                <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${app.position}</span></td>
+                <td>
+                  <a href="https://wa.me/${app.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #25d366; text-decoration: none; font-weight: 500;">💬 ${app.phone}</a>
+                  <div style="font-size: 11px; opacity: 0.8;">${app.email}</div>
+                </td>
+                <td>
+                  <div style="font-size: 12px; line-height: 1.4;">
+                    📅 Tgl: ${dateStr}<br>
+                    ⏰ Jam: ${timeStr} WIB<br>
+                    🔗 ${linkMarkup}
+                  </div>
+                </td>
+                <td><span class="status-badge accepted">Diterima</span></td>
+                <td>
+                  <button class="btn-icon cross" title="Hapus Riwayat" onclick="deleteApplicant(${app.id})">✗</button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Modal Operations
+    function openWAModal(id, name) {
+      document.getElementById("modalAppId").value = id;
+      document.getElementById("modalAppName").value = name;
+      document.getElementById("modalDecision").value = "Accepted";
+      
+      // Reset fields
+      document.getElementById("modalDate").value = "";
+      document.getElementById("modalTime").value = "";
+      document.getElementById("modalLink").value = "https://meet.google.com/";
+      
+      toggleInterviewFields("Accepted");
+      
+      document.getElementById("waModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("waModal").style.display = "none";
+    }
+
+    function toggleInterviewFields(decision) {
+      const fields = document.getElementById("interviewFields");
+      const dateInp = document.getElementById("modalDate");
+      const timeInp = document.getElementById("modalTime");
+      const linkInp = document.getElementById("modalLink");
+
+      if (decision === "Accepted") {
+        fields.style.display = "block";
+        dateInp.required = true;
+        timeInp.required = true;
+        linkInp.required = true;
+      } else {
+        fields.style.display = "none";
+        dateInp.required = false;
+        timeInp.required = false;
+        linkInp.required = false;
+      }
+    }
+
+    async function handleSendDecision(event) {
+      event.preventDefault();
+      const id = document.getElementById("modalAppId").value;
+      const decision = document.getElementById("modalDecision").value;
+      const interview_date = document.getElementById("modalDate").value;
+      const interview_time = document.getElementById("modalTime").value;
+      const interview_link = document.getElementById("modalLink").value;
+
+      const submitBtn = document.getElementById("modalSubmitBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sedang Memproses & Mengirim WA...";
+
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications/${id}/whatsapp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            decision,
+            interview_date,
+            interview_time,
+            interview_link
+          })
+        });
+
+        const resData = await response.json();
+        if (!response.ok) throw new Error(resData.message || 'Gagal memproses keputusan.');
+
+        alert("Sukses memperbarui status! Browser akan membuka tab WhatsApp baru dengan pesan keputusan otomatis yang sudah terisi. Silakan klik tombol 'Kirim' pada WhatsApp Anda.");
+        window.open(resData.whatsappUrl, '_blank');
+        closeModal();
+        loadData();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "💬 Kirim Notifikasi WA";
+      }
+    }
+
+    async function acceptApplicant(id) {
+      if (!confirm("Tandai pelamar ini telah resmi Diterima Kerja (Accepted)? Tindakan ini akan memindahkan data pelamar ke Riwayat Rekrutmen.")) return;
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications/${id}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status: 'Accepted' })
+        });
+        if (!response.ok) throw new Error("Gagal menerima pelamar.");
+        alert("Status pelamar berhasil diubah menjadi Diterima!");
+        loadData();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function deleteApplicant(id) {
+      if (!confirm("Apakah Anda yakin ingin menghapus berkas pelamar ini secara PERMANEN dari database? Tindakan ini tidak dapat dibatalkan.")) return;
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (!response.ok) throw new Error("Gagal menghapus pelamar.");
+        alert("Berkas pelamar berhasil dihapus.");
+        loadData();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("humaira_token");
+      localStorage.removeItem("humaira_user");
+      alert("Anda telah keluar dari panel admin.");
+      window.location.href = "profile.html";
+    }
+  </script>
+</body>
+
+</html>

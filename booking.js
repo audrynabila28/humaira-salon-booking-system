@@ -1,6 +1,6 @@
 (function () {
   const phoneNumber = "6289646946880"; // Nomor WhatsApp Humaira Salon
-  const API_URL = ''; // Relative path ke API server (Vercel/Localhost)
+  const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : ''; // Relative path ke API server (Vercel/Localhost)
 
   // Element selectors
   const serviceListEl = document.getElementById("serviceList");
