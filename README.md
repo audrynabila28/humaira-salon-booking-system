@@ -46,7 +46,7 @@ Proyek ini diselesaikan secara kolaboratif sebagai bagian dari portofolio profes
 *   **Forum Diskusi Publik (`konsultasi.html`)**: Wadah lapang bagi pelanggan untuk mengajukan keluhan kecantikan dan membaca saran perawatan dari salon.
 
 ### 🛡️ Sisi Pengelola (Backend & Admin Dashboard)
-*   **Sistem Auth Keamanan Tinggi**: Otentikasi login akun admin (`leniadmin@humairasalon.com` / `hum41r4s4l0n2007`).
+*   **Sistem Auth Keamanan Tinggi**: Otentikasi login akun admin (`- / `-`).
 *   **Dashboard Utama**: Mengelola status reservasi pelanggan (ceklis masuk omzet), katalog menu jasa, dan langganan e-mail promo.
 *   **Dashboard Recruitment (`admin-rekrutmen.html`)**: Halaman terpisah untuk menyaring berkas, menghapus pelamar (✗), dan mengirim keputusan rekrutmen secara instan via WhatsApp Web.
 *   **Dashboard Konsultasi (`admin-konsultasi.html`)**: Halaman terpisah untuk menjawab konsultasi keluhan pelanggan dan melakukan reset bulanan pertanyaan masuk.
