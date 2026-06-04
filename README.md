@@ -15,35 +15,41 @@
 
 Proyek ini diselesaikan secara kolaboratif sebagai bagian dari portofolio profesional dan Kerja Praktek dengan pembagian peran yang terstruktur:
 
-### 🎨 Frontend UI & UX Engineer
-**Elan Nurhaliza**
-*   **Desain Antarmuka & Tata Letak**: Merancang visual website menggunakan HTML5 dan Vanilla CSS dengan pendekatan estetika premium, elegan, dan responsif.
-*   **Responsivitas Mobile**: Mengoptimalkan grid, layout, dan media queries agar website nyaman diakses dari smartphone pelanggan.
-*   **Interaksi Sisi Klien**: Menangani manipulasi DOM, state kuantitas belanja perawatan, visualisasi tab kategori layanan, dan kalkulasi dinamis sementara di browser.
-
-### ⚙️ Backend & Security Engineer
+### ⚙️ Fullstack Developer
 **Audry Nabila**
-*   **Desain Arsitektur & Database**: Merancang skema database relasional (ERD) dan mengimplementasikan ORM Sequelize untuk mendukung SQLite (lokal) dan PostgreSQL (produksi).
-*   **RESTful API Development**: Membangun endpoint aman untuk manajemen autentikasi user, katalog layanan kecantikan (CRUD), riwayat reservasi, dan panel admin.
-*   **Autentikasi & Keamanan API**: Menerapkan sistem otorisasi berbasis **JSON Web Token (JWT)**, enkripsi password searah menggunakan **Bcrypt**, dan mengamankan kredensial rahasia melalui file `.env`.
-*   **Integrasi Automated WhatsApp Gateway**: Mengembangkan trigger pengiriman konfirmasi booking otomatis secara asynchronous dari sisi server langsung ke nomor WhatsApp pelanggan.
-*   **Deployment & Hosting**: Melakukan migrasi database ke Neon.tech (Postgre) serta men-deploy backend server ke **Vercel Cloud Serverless** lengkap dengan penanganan jalur tulis direktori asinkron `/tmp`.
+*   **Perancangan Skema Database**: Merancang arsitektur database relasional (ERD) dan konfigurasi ORM Sequelize (mendukung SQLite untuk lokal dan PostgreSQL untuk produksi).
+*   **RESTful API Development**: Membangun seluruh endpoint API backend untuk autentikasi user, katalog jasa (CRUD), riwayat reservasi pelanggan, daftar pelamar karir, dan forum tanya jawab.
+*   **Sistem Autentikasi & Keamanan**: Menerapkan otorisasi berbasis **JSON Web Token (JWT)**, enkripsi password searah menggunakan **Bcrypt**, dan proteksi rute halaman admin (*Auth Guard*).
+*   **Integrasi WhatsApp Gateway & Click-to-Chat**: Mengembangkan modul trigger booking otomatis serta link click-to-chat `wa.me` semi-otomatis untuk pengiriman keputusan rekrutmen ke WhatsApp pelamar.
+*   **Deployment & Hosting**: Konfigurasi deployment serverless Express.js di Vercel Cloud Serverless dan database Neon.tech.
+
+### 🎨 Frontend UI & UX Developer (Fitur Rekrutmen)
+**Elan Nurhaliza**
+*   **Desain Antarmuka Karir & Rekrutmen**: Merancang visual halaman karir publik `rekrutmen.html` dan dashboard rekrutmen terpisah `admin-rekrutmen.html` menggunakan HTML5 dan Vanilla CSS3.
+*   **Interaksi Formulir Lamaran**: Mengimplementasikan validasi form sisi klien, manipulasi DOM, state input berkas pelamar (Nama, Posisi, HP, Email, CV link), dan pengiriman data ke API backend rekrutmen.
+*   **Visualisasi Riwayat & Metrik**: Menyusun layout tabel pelamar aktif, riwayat kandidat diterima, dan widget total statistik pelamar kerja yang diterima.
+
+### 💬 Frontend UI & UX Developer (Fitur Forum Konsultasi)
+**Azzahra (Ara)**
+*   **Desain Antarmuka Forum Diskusi**: Merancang visual halaman forum kecantikan publik `konsultasi.html` dan dashboard kelola konsultasi terpisah `admin-konsultasi.html` bertema glassmorphism yang premium.
+*   **Redesain Tata Letak Luas**: Mengubah tata letak formulir tanya-jawab dan feed diskusi terjawab dari model kolom sempit menjadi **Stacked Layout** (lebar 850px-950px) agar nyaman dibaca dan bernuansa forum profesional.
+*   **Interaksi Tanya Jawab & Feed**: Menangani rendering dinamis kategori keluhan (Rambut, SPA, Wedding), status badge, serta modal input tanggapan admin salon.
 
 ---
 
 ## 🚀 Fitur Utama Sistem
 
 ### 💻 Sisi Pelanggan (Frontend & User Flow)
-*   **Katalog Interaktif**: Daftar perawatan (rambut, SPA, wedding) yang dimuat secara dinamis dari API database.
+*   **Katalog Jasa & Paket**: Daftar perawatan (rambut, SPA, wedding) dimuat dinamis dari API database.
 *   **Keranjang Belanja Reservasi**: Pelanggan dapat memilih lebih dari satu perawatan sekaligus dengan kuantitas berbeda.
-*   **Reservasi Langsung & Otomatis**: Form pengisian nama, tanggal, jam, dan nomor HP yang aman. Setelah berhasil dikirim, sistem otomatis mengarahkan ke nomor WhatsApp Admin dengan draf bukti reservasi yang rapi.
-*   **Keamanan anti-tamper**: Mencegah kecurangan pengeditan harga sepihak melalui browser.
+*   **Reservasi Langsung & WhatsApp Redirect**: Mengisi data booking dan otomatis mengarahkan ke chat WhatsApp Admin dengan format draf bukti reservasi yang rapi.
+*   **Forum Diskusi Publik (`konsultasi.html`)**: Wadah lapang bagi pelanggan untuk mengajukan keluhan kecantikan dan membaca saran perawatan dari salon.
 
 ### 🛡️ Sisi Pengelola (Backend & Admin Dashboard)
-*   **Sistem Auth (Registrasi/Login)**: Otentikasi aman untuk akun admin salon.
-*   **Dashboard Manajemen Reservasi**: Menampilkan semua daftar booking masuk secara real-time yang tersimpan di database cloud.
-*   **CRUD Katalog Layanan**: Admin dapat mengubah, menambah, atau menghapus menu perawatan dan harga yang tampil di website utama.
-*   **Statistik Keuangan**: Grafik ringkasan omzet bulanan, jumlah booking aktif, dan perawatan terlaris untuk mempermudah laporan keuangan salon.
+*   **Sistem Auth Keamanan Tinggi**: Otentikasi login akun admin (`leniadmin@humairasalon.com` / `hum41r4s4l0n2007`).
+*   **Dashboard Utama**: Mengelola status reservasi pelanggan (ceklis masuk omzet), katalog menu jasa, dan langganan e-mail promo.
+*   **Dashboard Recruitment (`admin-rekrutmen.html`)**: Halaman terpisah untuk menyaring berkas, menghapus pelamar (✗), dan mengirim keputusan rekrutmen secara instan via WhatsApp Web.
+*   **Dashboard Konsultasi (`admin-konsultasi.html`)**: Halaman terpisah untuk menjawab konsultasi keluhan pelanggan dan melakukan reset bulanan pertanyaan masuk.
 
 ---
 
@@ -58,73 +64,3 @@ Proyek ini diselesaikan secara kolaboratif sebagai bagian dari portofolio profes
 ---
 
 ## 📂 Struktur Direktori Proyek
-
-```
-📁 Humaira-Salon/
-├── 📁 config/
-│   └── database.js          # Inisialisasi Sequelize (Postgres / SQLite)
-├── 📁 images/               # Aset gambar & ilustrasi visual website
-├── 📄 server.js             # Entrypoint utama Express server, routing & database sync
-├── 📄 booking.js            # Logika logika fetch API & interaksi WhatsApp di frontend
-├── 📄 index.html            # Halaman Beranda utama
-├── 📄 about.html            # Halaman Kontak & Informasi Humaira Salon
-├── 📄 harga-rambut.html     # Modul booking perawatan rambut
-├── 📄 harga-spa.html        # Modul booking perawatan SPA
-├── 📄 dashboard.html        # Halaman Dashboard khusus Admin
-├── 📄 vercel.json           # File konfigurasi deploy Serverless Vercel
-├── 📄 .gitignore            # Mencegah file kredensial (.env, db) terunggah ke GitHub
-└── 📄 .env.example          # Template contoh konfigurasi environment variables
-```
-
----
-
-## 🔧 Menjalankan Proyek Secara Lokal
-
-### 1. Prasyarat (Prerequisites)
-Pastikan komputer Anda sudah terinstal **Node.js** (rekomendasi v18 ke atas) dan **Git**.
-
-### 2. Kloning Repositori
-```bash
-git clone https://github.com/audrynabila28/humaira-salon-booking-system.git
-cd humaira-salon-booking-system
-```
-
-### 3. Instalasi Dependency
-```bash
-npm install
-```
-
-### 4. Konfigurasi Environment Variables
-Buat salinan dari `.env.example` menjadi `.env` di folder root:
-```bash
-cp .env.example .env
-```
-Isi konfigurasi sesuai kebutuhan Anda:
-```env
-PORT=3000
-JWT_SECRET=rahasia_jwt_anda
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=password_admin_anda
-# Biarkan DATABASE_URL kosong untuk menggunakan SQLite lokal secara otomatis
-DATABASE_URL=
-```
-
-### 5. Jalankan Server
-```bash
-npm start
-```
-Buka browser Anda dan akses `http://localhost:3000`. Database SQLite lokal bernama `database.sqlite` akan otomatis dibuat dan diisi data katalog standar pada saat pertama kali dijalankan.
-
----
-
-## 🌐 Panduan Deploy ke Vercel
-
-Sistem ini dirancang agar dapat dihosting secara gratis di **Vercel** dengan konfigurasi otomatis:
-1.  Hubungkan repositori GitHub Anda ke akun **Vercel**.
-2.  Import proyek `humaira-salon-booking-system`.
-3.  Masukkan variabel lingkungan (*Environment Variables*) berikut pada halaman pengaturan Vercel:
-    *   `JWT_SECRET` (Contoh: String acak panjang)
-    *   `ADMIN_EMAIL` (Email masuk admin dashboard)
-    *   `ADMIN_PASSWORD` (Password masuk admin dashboard)
-    *   `DATABASE_URL` (Opsional - Tautan Postgres Neon.tech jika ingin data permanen)
-4.  Klik **Deploy**. Proyek Anda akan aktif dalam hitungan detik!
