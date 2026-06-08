@@ -29,7 +29,7 @@ const transporter = nodemailer.createTransport({
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // Menyajikan file-file HTML, CSS, JS statis di port 3000
+app.use(express.static(path.join(__dirname, 'frontend'))); // Menyajikan file-file HTML, CSS, JS statis di port 3000
 
 // Inisialisasi Sequelize (Postgres untuk Production Cloud, SQLite untuk Local Development)
 let sequelize;
