@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pelamar - Humaira Salon & Wedding</title>
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .profile-page {
+      min-height: 90vh;
+      background: url('images/bg.jpg') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 16px;
+      position: relative;
+    }
+
+    .profile-page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(3px);
+      z-index: 1;
+    }
+
+    .profile-container {
+      position: relative;
+      z-index: 2;
+      width: min(1000px, 100%);
+      background: rgba(141, 95, 95, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      padding: 40px;
+      color: #fff;
+      animation: fadeUp 0.8s ease;
+    }
+
+    /* DASHBOARD LAYOUT */
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .dash-header h2 {
+      font-size: 28px;
+      font-family: var(--font-heading);
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgb(239, 68, 68);
+    }
+
+    .profile-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .profile-info-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 25px;
+    }
+
+    .profile-info-box h3 {
+      font-size: 20px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 8px;
+      color: var(--accent-gold-glow);
+    }
+
+    .profile-info-item {
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .profile-info-item strong {
+      display: inline-block;
+      width: 120px;
+      opacity: 0.8;
+    }
+
+    /* DATA TABLES */
+    .table-container {
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px 18px;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* STATUS BADGES */
+    .status-tag {
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .status-tag.pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-tag.interview {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .status-tag.done {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-tag.cancelled {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .gmeet-btn {
+      background: #3b82f6;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12px;
+      display: inline-block;
+      margin-top: 5px;
+      transition: 0.2s;
+    }
+
+    .gmeet-btn:hover {
+      background: #2563eb;
+      transform: scale(1.02);
+    }
+
+    @media (max-width: 768px) {
+      .profile-container {
+        padding: 20px;
+        border-radius: 20px;
+      }
+      .dash-header h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR LUXURY -->
+  <header class="navbar">
+    <div class="logo-text" onclick="window.location.href='index.html'">
+      <h1>Humaira Salon</h1>
+      <p>Your Daily Beauty Partner</p>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="treatment.html">Treatment</a>
+      <a href="konsultasi.html">Konsultasi</a>
+      <a href="about.html">About Us</a>
+      <a href="rekrutmen.html">Join Us</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <!-- BODY CONTENT -->
+  <section class="profile-page">
+    <div class="profile-container">
+
+      <!-- HEADER DASHBOARD -->
+      <div class="dash-header">
+        <div>
+          <h2>Dashboard Pelamar Kerja</h2>
+          <p>Pantau hasil lamaran Anda dan kelola sesi wawancara.</p>
+        </div>
+        <button class="logout-btn" onclick="handleApplicantLogout()">Keluar Akun</button>
+      </div>
+
+      <!-- GRID PROFIL & BENEFIT -->
+      <div class="profile-card-grid">
+        <!-- Akun Pelamar -->
+        <div class="profile-info-box">
+          <h3>Profil Akun Pelamar</h3>
+          <div class="profile-info-item"><strong>Nama</strong>: <span id="applicantName">-</span></div>
+          <div class="profile-info-item"><strong>Email</strong>: <span id="applicantEmail">-</span></div>
+          <div class="profile-info-item"><strong>WhatsApp</strong>: <span id="applicantPhone">-</span></div>
+        </div>
+
+        <!-- Catatan Lowongan -->
+        <div class="profile-info-box" style="background: rgba(255, 255, 255, 0.05); border-style: dashed;">
+          <h3>Informasi Karir</h3>
+          <p style="font-size: 14px; line-height: 1.6; opacity: 0.9;">
+            Admin Humaira Salon & Wedding akan mengevaluasi CV dan riwayat kerja Anda. Pembaruan status (Penjadwalan Wawancara, Diterima, atau Ditolak) akan muncul secara langsung pada tabel di bawah ini secara real-time.
+          </p>
+        </div>
+      </div>
+
+      <!-- TABEL STATUS LAMARAN -->
+      <h3>Status Lamaran Kerja Anda</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Posisi Lowongan</th>
+              <th>Tanggal Melamar</th>
+              <th>Status Evaluasi</th>
+              <th>Detail Tindak Lanjut</th>
+            </tr>
+          </thead>
+          <tbody id="applicantAppHistory">
+            <tr>
+              <td colspan="4" style="text-align: center; opacity: 0.7; padding: 20px;">Memuat data lamaran...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : '';
+
+    let currentApplicant = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAuth();
+    });
+
+    // Helper format Rupiah
+    function formatRupiah(value) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    // Helper format Tanggal Indonesia
+    function formatDateID(dateValue) {
+      if (!dateValue) return "-";
+      const date = new Date(dateValue + "T00:00:00");
+      return new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      }).format(date);
+    }
+
+    // Check Authentication
+    async function checkAuth() {
+      const token = localStorage.getItem("humaira_applicant_token");
+      if (!token) {
+        alert("Akses ditolak! Anda harus masuk terlebih dahulu.");
+        window.location.href = "rekrutmen.html";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/applicant/me`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error("Invalid Session");
+
+        const data = await response.json();
+        currentApplicant = data;
+
+        // Render profile
+        document.getElementById("applicantName").textContent = data.name;
+        document.getElementById("applicantEmail").textContent = data.email;
+        document.getElementById("applicantPhone").textContent = data.phone;
+
+        // Load applications history
+        loadApplicationHistory();
+      } catch (err) {
+        alert("Sesi masuk pelamar kedaluwarsa. Silakan masuk kembali.");
+        localStorage.removeItem("humaira_applicant_token");
+        window.location.href = "rekrutmen.html";
+      }
+    }
+
+    // Load applications history
+    async function loadApplicationHistory() {
+      const token = localStorage.getItem("humaira_applicant_token");
+      const tbody = document.getElementById("applicantAppHistory");
+
+      try {
+        const response = await fetch(`${API_URL}/api/applications/my`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error("Gagal mengambil riwayat lamaran.");
+
+        const list = await response.json();
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; opacity: 0.7; padding: 25px;">Anda belum mengirimkan berkas lamaran pekerjaan apa pun.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list.map(app => {
+          let statusClass = 'pending';
+          let statusText = 'Menunggu';
+          let detailsHtml = '<span style="opacity: 0.75;">Berkas Anda sedang dievaluasi oleh Tim Admin.</span>';
+
+          if (app.status === 'Interview') {
+            statusClass = 'interview';
+            statusText = 'Wawancara';
+            detailsHtml = `
+              <div style="font-size: 13px; line-height: 1.5;">
+                <strong>Undangan Wawancara Online:</strong><br>
+                📅 Tgl: ${formatDateID(app.interview_date)}<br>
+                ⏰ Jam: ${app.interview_time} WIB<br>
+                <a href="${app.interview_link}" target="_blank" class="gmeet-btn">📹 Gabung Google Meet</a>
+              </div>
+            `;
+          } else if (app.status === 'Accepted') {
+            statusClass = 'done';
+            statusText = 'Diterima';
+            detailsHtml = `
+              <div style="color: #10b981; font-weight: 600; line-height: 1.5;">
+                🎉 Selamat! Lamaran Anda diterima.<br>
+                <span style="font-weight: 400; font-size: 13px; color: rgba(255,255,255,0.8);">
+                  Tim admin kami akan segera menghubungi Anda melalui WhatsApp/Telepon untuk jadwal orientasi dan tanda tangan kontrak.
+                </span>
+              </div>
+            `;
+          } else if (app.status === 'Rejected') {
+            statusClass = 'cancelled';
+            statusText = 'Ditolak';
+            detailsHtml = `
+              <div style="color: #ff8b8b; font-weight: 500; line-height: 1.5;">
+                Terima kasih atas partisipasi Anda.<br>
+                <span style="font-weight: 400; font-size: 13px; color: rgba(255,255,255,0.8);">
+                  Saat ini lamaran Anda belum dapat diproses ke tahap berikutnya. Tetap semangat dan semoga sukses di karir Anda mendatang!
+                </span>
+              </div>
+            `;
+          }
+
+          // Format applied date
+          const dateStr = app.createdAt ? formatDateID(app.createdAt.split('T')[0]) : '-';
+
+          return `
+            <tr>
+              <td><strong>${app.position}</strong></td>
+              <td>${dateStr}</td>
+              <td><span class="status-tag ${statusClass}">${statusText}</span></td>
+              <td>${detailsHtml}</td>
+            </tr>
+          `;
+        }).join('');
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #ff8b8b; padding: 25px;">${err.message}</td></tr>`;
+      }
+    }
+
+    // Handle Applicant Logout
+    function handleApplicantLogout() {
+      if (confirm("Keluar dari dashboard pelamar?")) {
+        localStorage.removeItem("humaira_applicant_token");
+        window.location.href = "rekrutmen.html";
+      }
+    }
+  </script>
+</body>
+
+</html>

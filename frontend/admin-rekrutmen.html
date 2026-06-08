@@ -36,7 +36,7 @@
     .profile-container {
       position: relative;
       z-index: 2;
-      width: min(1100px, 100%);
+      width: min(1150px, 100%);
       background: rgba(141, 95, 95, 0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -195,34 +195,63 @@
       border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
-    /* BUTTONS */
+    /* PREMIUM ACTION BUTTONS */
     .action-btn-group {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
-    .btn-wa {
-      background: linear-gradient(135deg, #25d366, #128c7e);
+    .btn-action-accept {
+      background: linear-gradient(135deg, #10b981, #059669);
       color: white;
       border: none;
       padding: 8px 14px;
       border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 12px;
       transition: 0.2s;
     }
-
-    .btn-wa:hover {
+    .btn-action-accept:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .btn-icon {
+    .btn-action-reject {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      transition: 0.2s;
+    }
+    .btn-action-reject:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-action-interview {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      transition: 0.2s;
+    }
+    .btn-action-interview:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-icon-delete {
       width: 32px;
       height: 32px;
       border-radius: 8px;
@@ -233,26 +262,32 @@
       justify-content: center;
       font-weight: bold;
       font-size: 16px;
-      color: white;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgb(239, 68, 68);
+      color: #ff8b8b;
       transition: 0.2s;
     }
 
-    .btn-icon.check {
-      background: #10b981;
-    }
-
-    .btn-icon.check:hover {
-      background: #059669;
-      transform: scale(1.08);
-    }
-
-    .btn-icon.cross {
+    .btn-icon-delete:hover {
       background: #ef4444;
+      color: white;
+      transform: scale(1.08);
     }
 
-    .btn-icon.cross:hover {
-      background: #dc2626;
-      transform: scale(1.08);
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgb(239, 68, 68);
     }
 
     /* MODAL WINDOWS */
@@ -263,7 +298,6 @@
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(4px);
       z-index: 1000;
-      display: none;
       align-items: center;
       justify-content: center;
       padding: 16px;
@@ -273,7 +307,7 @@
       background: #8d5f5f;
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
-      max-width: 550px;
+      max-width: 500px;
       width: 100%;
       padding: 30px;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
@@ -309,7 +343,7 @@
       opacity: 0.95;
     }
 
-    .form-group input, .form-group select {
+    .form-group input {
       width: 100%;
       padding: 11px 14px;
       border-radius: 10px;
@@ -321,15 +355,10 @@
       box-sizing: border-box;
     }
 
-    .form-group select option {
-      background: #8d5f5f;
-      color: white;
-    }
-
     .modal-submit-btn {
       width: 100%;
       padding: 12px;
-      background: #10b981;
+      background: #3b82f6;
       color: white;
       border: none;
       border-radius: 10px;
@@ -341,7 +370,7 @@
     }
 
     .modal-submit-btn:hover {
-      background: #059669;
+      background: #2563eb;
     }
   </style>
 </head>
@@ -417,13 +446,13 @@
     </div>
   </section>
 
-  <!-- WHATSAPP DECISION MODAL -->
-  <div id="waModal" class="modal" style="display: none;">
+  <!-- INTERVIEW SCHEDULING MODAL -->
+  <div id="interviewModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">&times;</button>
-      <h3 style="font-family: var(--font-heading); color: var(--accent-gold-glow); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Kirim Keputusan via WhatsApp</h3>
+      <h3 style="font-family: var(--font-heading); color: var(--accent-gold-glow); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Jadwalkan Wawancara</h3>
       
-      <form id="waForm" onsubmit="handleSendDecision(event)">
+      <form id="interviewForm" onsubmit="handleSendInterview(event)">
         <input type="hidden" id="modalAppId">
         
         <div class="form-group">
@@ -432,30 +461,19 @@
         </div>
 
         <div class="form-group">
-          <label for="modalDecision">Keputusan Lamaran</label>
-          <select id="modalDecision" required onchange="toggleInterviewFields(this.value)">
-            <option value="Accepted">✅ Terima & Jadwalkan Wawancara</option>
-            <option value="Rejected">❌ Tolak Lamaran (Sopan)</option>
-          </select>
+          <label for="modalDate">Tanggal Wawancara</label>
+          <input type="date" id="modalDate" required>
+        </div>
+        <div class="form-group">
+          <label for="modalTime">Jam Wawancara (WIB)</label>
+          <input type="time" id="modalTime" required>
+        </div>
+        <div class="form-group">
+          <label for="modalLink">Link Google Meet / Video Call</label>
+          <input type="url" id="modalLink" value="https://meet.google.com/" required placeholder="https://meet.google.com/abc-defg-hij">
         </div>
 
-        <!-- Acceptance Fields -->
-        <div id="interviewFields">
-          <div class="form-group">
-            <label for="modalDate">Tanggal Wawancara</label>
-            <input type="date" id="modalDate" required>
-          </div>
-          <div class="form-group">
-            <label for="modalTime">Jam Wawancara (WIB)</label>
-            <input type="time" id="modalTime" required>
-          </div>
-          <div class="form-group">
-            <label for="modalLink">Link Google Meet / Video Call</label>
-            <input type="url" id="modalLink" value="https://meet.google.com/" required placeholder="https://meet.google.com/abc-defg-hij">
-          </div>
-        </div>
-
-        <button type="submit" id="modalSubmitBtn" class="modal-submit-btn">💬 Kirim Notifikasi WA</button>
+        <button type="submit" id="modalSubmitBtn" class="modal-submit-btn">Simpan & Jadwalkan</button>
       </form>
     </div>
   </div>
@@ -539,16 +557,17 @@
                 </td>
                 <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${app.position}</span></td>
                 <td>
-                  <a href="https://wa.me/${app.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #25d366; text-decoration: none; font-weight: 500;">💬 ${app.phone}</a>
+                  <span style="color: #fff; font-weight: 500;">📞 ${app.phone}</span>
                   <div style="font-size: 11px; opacity: 0.8; margin-top: 2px;">${app.email}</div>
                 </td>
                 <td><a href="${app.cv_link}" target="_blank" style="color: var(--accent-gold-glow); font-weight: 600; text-decoration: underline;">📄 Buka Berkas CV</a></td>
                 <td><span class="status-badge ${badgeClass}">${badgeText}</span></td>
                 <td>
                   <div class="action-btn-group">
-                    <button class="btn-wa" onclick="openWAModal(${app.id}, '${app.name}')">💬 Kirim WA</button>
-                    <button class="btn-icon check" title="Terima Resmi" onclick="acceptApplicant(${app.id})">✓</button>
-                    <button class="btn-icon cross" title="Hapus Berkas" onclick="deleteApplicant(${app.id})">✗</button>
+                    <button class="btn-action-accept" onclick="processDecision(${app.id}, 'Accepted')">Diterima</button>
+                    <button class="btn-action-reject" onclick="processDecision(${app.id}, 'Rejected')">Ditolak</button>
+                    <button class="btn-action-interview" onclick="openInterviewModal(${app.id}, '${app.name}')">Kirim Link Interview</button>
+                    <button class="btn-icon-delete" title="Hapus Berkas" onclick="deleteApplicant(${app.id})">✗</button>
                   </div>
                 </td>
               </tr>
@@ -558,7 +577,7 @@
 
         // 3. Render Accepted Employees History Table
         if (acceptedList.length === 0) {
-          historyTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Belum ada riwayat rekrutmen.</td></tr>`;
+          historyTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Belum ada riwayat pelamar diterima.</td></tr>`;
         } else {
           historyTbody.innerHTML = acceptedList.map(app => {
             const dateStr = app.interview_date || '-';
@@ -570,7 +589,7 @@
                 <td><strong>${app.name}</strong></td>
                 <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${app.position}</span></td>
                 <td>
-                  <a href="https://wa.me/${app.phone.replace(/[^0-9]/g, '')}" target="_blank" style="color: #25d366; text-decoration: none; font-weight: 500;">💬 ${app.phone}</a>
+                  <span style="color: #fff; font-weight: 500;">📞 ${app.phone}</span>
                   <div style="font-size: 11px; opacity: 0.8;">${app.email}</div>
                 </td>
                 <td>
@@ -582,7 +601,7 @@
                 </td>
                 <td><span class="status-badge accepted">Diterima</span></td>
                 <td>
-                  <button class="btn-icon cross" title="Hapus Riwayat" onclick="deleteApplicant(${app.id})">✗</button>
+                  <button class="btn-icon-delete" title="Hapus Riwayat" onclick="deleteApplicant(${app.id})">✗</button>
                 </td>
               </tr>
             `;
@@ -595,66 +614,72 @@
     }
 
     // Modal Operations
-    function openWAModal(id, name) {
+    function openInterviewModal(id, name) {
       document.getElementById("modalAppId").value = id;
       document.getElementById("modalAppName").value = name;
-      document.getElementById("modalDecision").value = "Accepted";
       
       // Reset fields
       document.getElementById("modalDate").value = "";
       document.getElementById("modalTime").value = "";
       document.getElementById("modalLink").value = "https://meet.google.com/";
       
-      toggleInterviewFields("Accepted");
-      
-      document.getElementById("waModal").style.display = "flex";
+      document.getElementById("interviewModal").style.display = "flex";
     }
 
     function closeModal() {
-      document.getElementById("waModal").style.display = "none";
+      document.getElementById("interviewModal").style.display = "none";
     }
 
-    function toggleInterviewFields(decision) {
-      const fields = document.getElementById("interviewFields");
-      const dateInp = document.getElementById("modalDate");
-      const timeInp = document.getElementById("modalTime");
-      const linkInp = document.getElementById("modalLink");
+    // Process direct decision (Accepted or Rejected)
+    async function processDecision(id, action) {
+      const actionText = action === 'Accepted' ? 'DITERIMA BEKERJA' : 'DITOLAK';
+      const confirmMsg = `Apakah Anda yakin ingin menetapkan pelamar ini sebagai ${actionText}?\nTindakan ini akan mengupdate status di dashboard pelamar secara langsung.`;
+      
+      if (!confirm(confirmMsg)) return;
 
-      if (decision === "Accepted") {
-        fields.style.display = "block";
-        dateInp.required = true;
-        timeInp.required = true;
-        linkInp.required = true;
-      } else {
-        fields.style.display = "none";
-        dateInp.required = false;
-        timeInp.required = false;
-        linkInp.required = false;
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/admin/applications/${id}/action`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ action })
+        });
+
+        const resData = await response.json();
+        if (!response.ok) throw new Error(resData.message || 'Gagal memproses keputusan.');
+
+        alert(`Sukses memperbarui status pelamar menjadi ${action === 'Accepted' ? 'Diterima' : 'Ditolak'}!`);
+        loadData();
+      } catch (err) {
+        alert(err.message);
       }
     }
 
-    async function handleSendDecision(event) {
+    // Schedule Interview Form Submission
+    async function handleSendInterview(event) {
       event.preventDefault();
       const id = document.getElementById("modalAppId").value;
-      const decision = document.getElementById("modalDecision").value;
       const interview_date = document.getElementById("modalDate").value;
       const interview_time = document.getElementById("modalTime").value;
       const interview_link = document.getElementById("modalLink").value;
 
       const submitBtn = document.getElementById("modalSubmitBtn");
       submitBtn.disabled = true;
-      submitBtn.textContent = "Sedang Memproses & Mengirim WA...";
+      submitBtn.textContent = "Menyimpan Jadwal...";
 
       const token = localStorage.getItem("humaira_token");
       try {
-        const response = await fetch(`${API_URL}/api/admin/applications/${id}/whatsapp`, {
-          method: 'POST',
+        const response = await fetch(`${API_URL}/api/admin/applications/${id}/action`, {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
-            decision,
+            action: 'Interview',
             interview_date,
             interview_time,
             interview_link
@@ -662,37 +687,16 @@
         });
 
         const resData = await response.json();
-        if (!response.ok) throw new Error(resData.message || 'Gagal memproses keputusan.');
+        if (!response.ok) throw new Error(resData.message || 'Gagal menyimpan jadwal wawancara.');
 
-        alert("Sukses memperbarui status! Browser akan membuka tab WhatsApp baru dengan pesan keputusan otomatis yang sudah terisi. Silakan klik tombol 'Kirim' pada WhatsApp Anda.");
-        window.open(resData.whatsappUrl, '_blank');
+        alert("Sukses menjadwalkan wawancara! Tautan rapat dan jadwal sudah terkirim ke dashboard pelamar.");
         closeModal();
         loadData();
       } catch (err) {
         alert(err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "💬 Kirim Notifikasi WA";
-      }
-    }
-
-    async function acceptApplicant(id) {
-      if (!confirm("Tandai pelamar ini telah resmi Diterima Kerja (Accepted)? Tindakan ini akan memindahkan data pelamar ke Riwayat Rekrutmen.")) return;
-      const token = localStorage.getItem("humaira_token");
-      try {
-        const response = await fetch(`${API_URL}/api/admin/applications/${id}/status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ status: 'Accepted' })
-        });
-        if (!response.ok) throw new Error("Gagal menerima pelamar.");
-        alert("Status pelamar berhasil diubah menjadi Diterima!");
-        loadData();
-      } catch (err) {
-        alert(err.message);
+        submitBtn.textContent = "Simpan & Jadwalkan";
       }
     }
 

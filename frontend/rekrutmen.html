@@ -12,6 +12,152 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Auth Form Styling matching profile.html */
+    .auth-box {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 10px 0;
+    }
+
+    .auth-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+
+    .auth-tab {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 20px;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .auth-tab.active {
+      color: #fff;
+    }
+
+    .auth-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent-gold-glow);
+      border-radius: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      opacity: 0.9;
+      color: var(--accent-gold-glow);
+    }
+
+    .form-group input {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-family: var(--font-body);
+      transition: 0.3s;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: var(--accent-gold);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: #fff;
+      color: #8d5f5f;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      font-family: var(--font-body);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      background: #f5f5f5;
+    }
+
+    /* Welcome block */
+    .welcome-block {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px dashed var(--accent-gold);
+      border-radius: 16px;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .btn-dash {
+      background: var(--accent-gold);
+      color: #3b2222;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      transition: 0.2s;
+      display: inline-block;
+    }
+
+    .btn-dash:hover {
+      background: var(--accent-gold-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ff8b8b;
+      border: 1px solid rgb(239, 68, 68);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+  </style>
 </head>
 
 <body>
@@ -36,29 +182,84 @@
   <!-- REKRUTMEN CORE -->
   <main class="price-page">
     <section class="price-card" style="max-width: 650px;">
-      <div class="price-header" style="text-align: center;">
+      <div class="price-header" style="text-align: center; margin-bottom: 20px;">
         <h2>Bergabung Bersama Kami</h2>
-        <p>Apakah Anda bertalenta di bidang kecantikan, tata rias, atau spa? Kirimkan berkas lamaran Anda hari ini dan jadilah bagian dari tim Humaira Salon.</p>
+        <p id="subtextHeader">Apakah Anda bertalenta di bidang kecantikan, tata rias, atau spa? Masuk ke akun Anda dan kirimkan berkas lamaran hari ini.</p>
       </div>
 
-      <form id="careerForm" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+      <!-- KONDISI 1: PELAMAR SUDAH LOGIN -->
+      <div id="welcomeSection" class="welcome-block" style="display: none;">
+        <div>
+          <span style="font-size: 14px; opacity: 0.9;">Masuk sebagai Pelamar:</span>
+          <h4 id="welcomeApplicantName" style="font-size: 16px; color: var(--accent-gold-glow); font-weight: 600; margin-top: 2px;">-</h4>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="dashboard-pelamar.html" class="btn-dash">📋 Dashboard Pelamar</a>
+          <button class="btn-logout" onclick="handleApplicantLogout()">Keluar</button>
+        </div>
+      </div>
+
+      <!-- KONDISI 2: BELUM LOGIN (FORM LOGIN/REGISTER PELAMAR) -->
+      <div id="authSection" class="auth-box">
+        <div class="auth-tabs">
+          <button id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')">Masuk Pelamar</button>
+          <button id="tabRegister" class="auth-tab" onclick="switchAuthTab('register')">Daftar Akun Baru</button>
+        </div>
+
+        <!-- FORM LOGIN PELAMAR -->
+        <form id="applicantLoginForm" onsubmit="handleApplicantLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">Email Pelamar</label>
+            <input type="email" id="loginEmail" placeholder="nama@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Masukkan password pelamar" required>
+          </div>
+          <button type="submit" class="submit-btn">Masuk & Melamar</button>
+        </form>
+
+        <!-- FORM REGISTER PELAMAR -->
+        <form id="applicantRegisterForm" onsubmit="handleApplicantRegister(event)" style="display: none;">
+          <div class="form-group">
+            <label for="regName">Nama Lengkap</label>
+            <input type="text" id="regName" placeholder="Masukkan nama lengkap" required>
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email Aktif</label>
+            <input type="email" id="regEmail" placeholder="nama@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="regPhone">Nomor WhatsApp</label>
+            <input type="text" id="regPhone" placeholder="Contoh: 089646946880" required>
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="Buat password minimal 6 karakter" required>
+          </div>
+          <button type="submit" class="submit-btn">Daftar Akun Pelamar</button>
+        </form>
+      </div>
+
+      <!-- FORM KIRIM LAMARAN (Hanya Tampil Jika Sudah Login) -->
+      <form id="careerForm" style="display: none; flex-direction: column; gap: 15px; margin-top: 10px;">
         
         <!-- Nama Lengkap -->
         <div class="field-group">
           <label for="applicantName">Nama Lengkap</label>
-          <input type="text" id="applicantName" placeholder="Masukkan nama lengkap Anda" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+          <input type="text" id="applicantName" required readonly style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255,255,255,0.7); cursor: not-allowed;">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
           <!-- Email -->
           <div class="field-group">
             <label for="applicantEmail">Email</label>
-            <input type="email" id="applicantEmail" placeholder="nama@email.com" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+            <input type="email" id="applicantEmail" required readonly style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255,255,255,0.7); cursor: not-allowed;">
           </div>
           <!-- WhatsApp -->
           <div class="field-group">
             <label for="applicantPhone">Nomor WhatsApp</label>
-            <input type="text" id="applicantPhone" placeholder="Contoh: 089695858900" required style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff;">
+            <input type="text" id="applicantPhone" required readonly style="width: 100%; border: none; border-radius: 10px; padding: 10px; font-size: 14px; outline: none; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255,255,255,0.7); cursor: not-allowed;">
           </div>
         </div>
 
@@ -97,6 +298,129 @@
   </main>
 
   <script>
+    const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : '';
+
+    let currentApplicant = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      checkApplicantAuth();
+    });
+
+    // Check Applicant Auth State
+    async function checkApplicantAuth() {
+      const token = localStorage.getItem("humaira_applicant_token");
+      if (!token) {
+        document.getElementById("authSection").style.display = "block";
+        document.getElementById("welcomeSection").style.display = "none";
+        document.getElementById("careerForm").style.display = "none";
+        document.getElementById("subtextHeader").textContent = "Apakah Anda bertalenta di bidang kecantikan, tata rias, atau spa? Masuk ke akun Anda dan kirimkan berkas lamaran hari ini.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/applicant/me`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error("Invalid applicant session");
+
+        const data = await response.json();
+        currentApplicant = data;
+
+        // Render Welcome & Career Form
+        document.getElementById("authSection").style.display = "none";
+        document.getElementById("welcomeSection").style.display = "flex";
+        document.getElementById("welcomeApplicantName").textContent = data.name;
+
+        // Fill Career Form
+        document.getElementById("applicantName").value = data.name;
+        document.getElementById("applicantEmail").value = data.email;
+        document.getElementById("applicantPhone").value = data.phone;
+        document.getElementById("careerForm").style.display = "flex";
+        document.getElementById("subtextHeader").textContent = "Isi formulir di bawah ini dengan lengkap untuk mengirimkan lamaran pekerjaan Anda.";
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("humaira_applicant_token");
+        checkApplicantAuth();
+      }
+    }
+
+    // Switch Login vs Register Tabs
+    function switchAuthTab(tab) {
+      if (tab === 'login') {
+        document.getElementById("tabLogin").classList.add("active");
+        document.getElementById("tabRegister").classList.remove("active");
+        document.getElementById("applicantLoginForm").style.display = "block";
+        document.getElementById("applicantRegisterForm").style.display = "none";
+      } else {
+        document.getElementById("tabRegister").classList.add("active");
+        document.getElementById("tabLogin").classList.remove("active");
+        document.getElementById("applicantRegisterForm").style.display = "block";
+        document.getElementById("applicantLoginForm").style.display = "none";
+      }
+    }
+
+    // Handle Applicant Register
+    async function handleApplicantRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const password = document.getElementById("regPassword").value;
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/applicant/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, phone, password })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+
+        alert(data.message);
+        switchAuthTab('login');
+        document.getElementById("loginEmail").value = email;
+        document.getElementById("loginPassword").value = "";
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    // Handle Applicant Login
+    async function handleApplicantLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/applicant/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+
+        localStorage.setItem("humaira_applicant_token", data.token);
+        alert(data.message);
+        checkApplicantAuth();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    // Handle Applicant Logout
+    function handleApplicantLogout() {
+      if (confirm("Keluar dari sistem pelamar?")) {
+        localStorage.removeItem("humaira_applicant_token");
+        currentApplicant = null;
+        checkApplicantAuth();
+      }
+    }
+
+    // Submit Job Application
     document.getElementById('careerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -113,39 +437,23 @@
         experience: document.getElementById('applicantExperience').value.trim()
       };
 
-      const API_URL = window.location.port && window.location.port !== '3000' && window.location.port !== '80' && window.location.port !== '443' ? 'http://localhost:3000' : '';
+      const token = localStorage.getItem("humaira_applicant_token");
       try {
         const response = await fetch(`${API_URL}/api/applications`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(payload)
         });
  
-        if (!response.ok) {
-          let errMsg = 'Gagal mengirim lamaran.';
-          try {
-            const errData = await response.json();
-            errMsg = errData.message || errMsg;
-          } catch (e) {
-            try {
-              const text = await response.text();
-              if (text.includes('<pre>')) {
-                const match = text.match(/<pre>([\s\S]*?)<\/pre>/);
-                if (match) errMsg = match[1].replace(/<br>/g, '\n').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'");
-              } else {
-                errMsg = `Error ${response.status}: ${response.statusText}`;
-              }
-            } catch (e2) {}
-          }
-          throw new Error(errMsg);
-        }
-
         const resData = await response.json();
+        if (!response.ok) throw new Error(resData.message || 'Gagal mengirim lamaran.');
 
-        alert('Selamat! Berkas lamaran Anda berhasil terkirim. Mohon tunggu konfirmasi admin di WhatsApp Anda.');
+        alert('Selamat! Berkas lamaran Anda berhasil terkirim. Anda sekarang dapat memantau status lamaran di Dashboard Pelamar.');
         document.getElementById('careerForm').reset();
+        window.location.href = 'dashboard-pelamar.html';
       } catch (err) {
         alert(err.message);
       } finally {
