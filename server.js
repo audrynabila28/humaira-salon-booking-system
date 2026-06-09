@@ -123,13 +123,16 @@ const Stylist = sequelize.define('Stylist', {
 
 const Consultation = sequelize.define('Consultation', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  customer_name: { type: DataTypes.STRING, allowNull: false },
-  customer_email: { type: DataTypes.STRING, allowNull: true },
   user_id: { type: DataTypes.INTEGER, allowNull: true },
-  category: { type: DataTypes.STRING, allowNull: false }, // Rambut, SPA, Wedding, Lainnya
-  question: { type: DataTypes.TEXT, allowNull: false },
-  answer: { type: DataTypes.TEXT, allowNull: true },
-  status: { type: DataTypes.STRING, defaultValue: 'Pending' } // Pending, Answered, Resolved
+  judul: { type: DataTypes.STRING, allowNull: false },
+  status: { type: DataTypes.STRING, defaultValue: 'Menunggu Jawaban' } // Menunggu Jawaban, Sedang Diskusi, Terjawab
+});
+
+const ConsultationMessage = sequelize.define('ConsultationMessage', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  consultation_id: { type: DataTypes.INTEGER, allowNull: false },
+  sender_type: { type: DataTypes.STRING, allowNull: false }, // 'member' atau 'terapis'
+  pesan: { type: DataTypes.TEXT, allowNull: false }
 });
 
 // Relasi Tabel
@@ -139,8 +142,10 @@ User.hasMany(Booking, { foreignKey: 'user_id', onDelete: 'SET NULL' });
 Booking.belongsTo(User, { foreignKey: 'user_id' });
 Stylist.hasMany(Booking, { foreignKey: 'stylist_id', onDelete: 'SET NULL' });
 Booking.belongsTo(Stylist, { foreignKey: 'stylist_id' });
-User.hasMany(Consultation, { foreignKey: 'user_id', onDelete: 'SET NULL' });
-Consultation.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Consultation, { foreignKey: 'user_id', onDelete: 'CASCADE', constraints: false });
+Consultation.belongsTo(User, { foreignKey: 'user_id', constraints: false });
+Consultation.hasMany(ConsultationMessage, { foreignKey: 'consultation_id', onDelete: 'CASCADE' });
+ConsultationMessage.belongsTo(Consultation, { foreignKey: 'consultation_id' });
 
 // ==========================================
 // SEEDING MASTER DATA AWAL (JIKA DATABASE KOSONG)
@@ -195,31 +200,16 @@ const seedData = async () => {
 
   const consultationCount = await Consultation.count();
   if (consultationCount === 0) {
-    await Consultation.bulkCreate([
-      {
-        customer_name: 'Adinda Putri',
-        customer_email: 'adinda@example.com',
-        category: 'Rambut',
-        question: 'Rambut saya sering lepek dan lemas setelah dikeringkan, padahal baru keramas pagi hari. Apakah ada perawatan creambath khusus atau smoothing yang cocok untuk tipe rambut lepek?',
-        answer: 'Halo Adinda! Untuk tipe rambut lepek, kami menyarankan creambath ginseng atau Hair Spa Lidah Buaya secara berkala (2 minggu sekali) untuk memperkuat akar tanpa membuat batang rambut terlalu berminyak. Hindari juga mengaplikasikan kondisioner pada area kulit kepala, cukup di ujung rambut saja ya.',
-        status: 'Resolved'
-      },
-      {
-        customer_name: 'Sari Rahayu',
-        customer_email: 'sari.r@example.com',
-        category: 'Wedding',
-        question: 'Untuk Paket Akad Basic, apakah makeup artist bisa dipanggil ke rumah atau harus datang ke salon? Lalu apakah sudah termasuk riasan pendamping pengantin?',
-        answer: 'Halo Kak Sari! Untuk semua Paket Pernikahan (termasuk Paket Akad Basic), MUA kami bisa datang langsung ke lokasi acara/rumah Kakak tanpa biaya tambahan (radius 10km). Paket Basic fokus pada rias pengantin inti. Jika butuh riasan pendamping, Kakak bisa menambah Paket Makeup Family seharga Rp500.000 untuk 2 orang pendamping.',
-        status: 'Answered'
-      },
-      {
-        customer_name: 'Fani Fitriani',
-        category: 'SPA',
-        question: 'Saya pegal-pegal seluruh badan karena kerja kantoran seharian di depan laptop. Sebaiknya saya ambil paket spa rileks humaira atau pijat tradisional tubuh saja ya?',
-        answer: 'Halo Kak Fani! Jika keluhan utama adalah pegal fisik yang terpusat, Pijat Tradisional Tubuh 60 menit sangat baik untuk meredakan kaku otot. Namun, jika Kakak juga butuh penyegaran kulit kusam, Paket Spa Rileks Humaira (pijat + lulur susu + masker wajah) adalah pilihan paling direkomendasikan karena rileksnya sangat menyeluruh.',
-        status: 'Resolved'
-      }
-    ]);
+    const adminThread = await Consultation.create({
+      user_id: null, // Admin
+      judul: 'Selamat Datang di Forum Konsultasi Humaira Salon',
+      status: 'Terjawab'
+    });
+    await ConsultationMessage.create({
+      consultation_id: adminThread.id,
+      sender_type: 'terapis',
+      pesan: 'Silakan tanyakan keluhan seputar rambut, SPA, atau riasan pengantin di sini. Kami dan pelanggan lain siap membantu berdiskusi secara interaktif!'
+    });
     console.log('[Database] Berhasil melakukan seed master data forum konsultasi.');
   }
 };
@@ -919,134 +909,148 @@ app.delete('/api/admin/applications/:id', authenticateJWT, isAdmin, async (req, 
 });
 
 // ==========================================
-// CONSULTATION / DISCUSSION FORUM API (Tugas Mandiri Azzahra)
+// CONSULTATION / DISCUSSION FORUM API
 // ==========================================
 
-// 1. Dapatkan semua konsultasi yang sudah dijawab/resolved (Publik)
+// 1. Dapatkan semua thread diskusi
 app.get('/api/consultations', async (req, res) => {
   try {
-    const list = await Consultation.findAll({
-      where: {
-        status: ['Answered', 'Resolved']
-      },
+    const threads = await Consultation.findAll({
+      include: [
+        { model: User, attributes: ['id', 'name'] },
+        { model: ConsultationMessage, attributes: ['id', 'sender_type', 'pesan', 'createdAt'] }
+      ],
       order: [['id', 'DESC']]
     });
-    res.json(list);
+    res.json(threads);
   } catch (error) {
     res.status(500).json({ message: 'Gagal mengambil data forum konsultasi.', error: error.message });
   }
 });
 
-// 2. Kirim pertanyaan konsultasi baru (Publik / Member)
-app.post('/api/consultations', async (req, res) => {
+// 2. Buat Topik / Pertanyaan Baru (Hanya Member)
+app.post('/api/consultations', authenticateJWT, async (req, res) => {
   try {
-    const { customer_name, customer_email, category, question } = req.body;
-    if (!customer_name || !category || !question) {
-      return res.status(400).json({ message: 'Nama, kategori keluhan, dan isi pertanyaan wajib diisi.' });
+    if (req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admin tidak dapat membuat topik. Hanya member.' });
     }
 
-    // Ambil user ID jika token dikirimkan (member login)
-    let userId = null;
-    let finalEmail = customer_email || null;
-    let finalName = customer_name;
-
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      const token = authHeader.split(' ')[1];
-      try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        if (decoded.role === 'customer') {
-          userId = decoded.id;
-          const user = await User.findByPk(userId);
-          if (user) {
-            finalName = user.name;
-            finalEmail = user.email;
-          }
-        }
-      } catch (err) {
-        // Token tidak valid/kedaluwarsa, abaikan dan proses sebagai Guest
-      }
+    const { judul, pertanyaan } = req.body;
+    if (!judul || !pertanyaan) {
+      return res.status(400).json({ message: 'Judul dan isi pertanyaan wajib diisi.' });
     }
 
-    const newConsultation = await Consultation.create({
-      customer_name: finalName,
-      customer_email: finalEmail,
-      user_id: userId,
-      category,
-      question,
-      status: 'Pending'
+    const newThread = await Consultation.create({
+      user_id: req.user.id,
+      judul,
+      status: 'Menunggu Jawaban'
+    });
+
+    await ConsultationMessage.create({
+      consultation_id: newThread.id,
+      sender_type: 'member',
+      pesan: pertanyaan
     });
 
     res.status(201).json({
-      message: 'Pertanyaan Anda berhasil dikirim! Pemilik salon akan segera memberikan jawaban di forum.',
-      consultation: newConsultation
+      message: 'Topik diskusi berhasil dibuat!',
+      consultation: newThread
     });
   } catch (error) {
-    res.status(500).json({ message: 'Gagal mengirim pertanyaan konsultasi.', error: error.message });
+    res.status(500).json({ message: 'Gagal membuat diskusi konsultasi.', error: error.message });
   }
 });
 
-// 3. Admin-Only: Ambil seluruh data konsultasi (termasuk Pending)
-app.get('/api/admin/consultations', authenticateJWT, isAdmin, async (req, res) => {
+// 3. Tambah Balasan ke Topik (Member & Admin)
+app.post('/api/consultations/:id/reply', authenticateJWT, async (req, res) => {
   try {
-    const list = await Consultation.findAll({
-      order: [['id', 'DESC']]
+    const { pesan } = req.body;
+    if (!pesan || pesan.trim() === '') {
+      return res.status(400).json({ message: 'Isi balasan wajib diisi.' });
+    }
+
+    const thread = await Consultation.findByPk(req.params.id);
+    if (!thread) {
+      return res.status(404).json({ message: 'Diskusi tidak ditemukan.' });
+    }
+
+    if (thread.status === 'Terjawab' || thread.status === 'Selesai') {
+      return res.status(400).json({ message: 'Diskusi ini sudah dikunci (Terjawab).' });
+    }
+
+    let sender_type = 'member';
+    if (req.user.role === 'admin') {
+      sender_type = 'terapis';
+      // Admin merespon -> Status jadi Sedang Diskusi
+      await thread.update({ status: 'Sedang Diskusi' });
+    } else {
+      if (req.user.id !== thread.user_id) {
+        return res.status(403).json({ message: 'Hanya pemilik diskusi yang dapat membalas.' });
+      }
+      // Member membalas -> Status tetap Sedang Diskusi jika sudah, atau tetap Menunggu Jawaban jika admin belum balas.
+    }
+
+    const newMessage = await ConsultationMessage.create({
+      consultation_id: thread.id,
+      sender_type,
+      pesan
     });
-    res.json(list);
+
+    res.status(201).json({
+      message: 'Berhasil menambahkan balasan.',
+      reply: newMessage
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Gagal mengambil data kelola konsultasi.', error: error.message });
+    res.status(500).json({ message: 'Gagal mengirim balasan.', error: error.message });
   }
 });
 
-// 4. Admin-Only: Jawab pertanyaan konsultasi
-app.put('/api/admin/consultations/:id/answer', authenticateJWT, isAdmin, async (req, res) => {
+// 4. Member: Tandai diskusi selesai (Terjawab)
+app.patch('/api/consultations/:id/resolve', authenticateJWT, async (req, res) => {
   try {
-    const { answer } = req.body;
-    if (!answer || answer.trim() === '') {
-      return res.status(400).json({ message: 'Jawaban konsultasi wajib diisi.' });
+    const thread = await Consultation.findByPk(req.params.id);
+    if (!thread) {
+      return res.status(404).json({ message: 'Diskusi tidak ditemukan.' });
     }
 
-    const item = await Consultation.findByPk(req.params.id);
-    if (!item) {
-      return res.status(404).json({ message: 'Data konsultasi tidak ditemukan.' });
+    if (req.user.role === 'admin' || req.user.id !== thread.user_id) {
+      return res.status(403).json({ message: 'Hanya member pembuat diskusi yang dapat menandai Terjawab.' });
     }
 
-    await item.update({
-      answer: answer,
-      status: 'Answered'
+    await thread.update({
+      status: 'Terjawab'
     });
 
-    res.json({ message: 'Berhasil menyimpan balasan konsultasi.', consultation: item });
-  } catch (error) {
-    res.status(500).json({ message: 'Gagal menyimpan jawaban konsultasi.', error: error.message });
-  }
-});
-
-// 5. Admin-Only: Tandai ceklis selesai (Resolve)
-app.patch('/api/admin/consultations/:id/resolve', authenticateJWT, isAdmin, async (req, res) => {
-  try {
-    const item = await Consultation.findByPk(req.params.id);
-    if (!item) {
-      return res.status(404).json({ message: 'Data konsultasi tidak ditemukan.' });
-    }
-
-    await item.update({
-      status: 'Resolved'
-    });
-
-    res.json({ message: 'Diskusi konsultasi berhasil ditandai selesai (Resolved).', consultation: item });
+    res.json({ message: 'Diskusi konsultasi berhasil ditandai selesai (Terjawab).', thread });
   } catch (error) {
     res.status(500).json({ message: 'Gagal menyelesaikan diskusi.', error: error.message });
   }
 });
 
-// 6. Admin-Only: Hapus Seluruh Pertanyaan (Reset Bulanan)
+// 5. Admin-Only: Hapus Seluruh Topik Diskusi (Reset Bulanan)
 app.delete('/api/admin/consultations', authenticateJWT, isAdmin, async (req, res) => {
   try {
+    await ConsultationMessage.destroy({ where: {} });
     await Consultation.destroy({ where: {} });
-    res.json({ message: 'Seluruh pertanyaan forum konsultasi berhasil direset (dihapus).' });
+    res.json({ message: 'Seluruh data forum konsultasi berhasil direset (dihapus).' });
   } catch (error) {
-    res.status(500).json({ message: 'Gagal mereset pertanyaan konsultasi.', error: error.message });
+    res.status(500).json({ message: 'Gagal mereset forum konsultasi.', error: error.message });
+  }
+});
+
+// 6. Admin-Only: Dapatkan semua thread untuk dashboard admin
+app.get('/api/admin/consultations', authenticateJWT, isAdmin, async (req, res) => {
+  try {
+    const threads = await Consultation.findAll({
+      include: [
+        { model: User, attributes: ['id', 'name'] },
+        { model: ConsultationMessage, attributes: ['id', 'sender_type', 'pesan', 'createdAt'] }
+      ],
+      order: [['id', 'DESC']]
+    });
+    res.json(threads);
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal mengambil data forum konsultasi admin.', error: error.message });
   }
 });
 

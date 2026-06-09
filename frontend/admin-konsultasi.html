@@ -119,6 +119,37 @@
       font-weight: 700;
     }
 
+    /* TABS */
+    .tabs-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #ccc;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 10px 15px;
+      transition: 0.3s;
+      border-bottom: 2px solid transparent;
+      font-family: var(--font-body);
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-gold-glow);
+      border-bottom: 2px solid var(--accent-gold);
+    }
+
     /* DATA TABLES */
     .section-header {
       display: flex;
@@ -372,8 +403,15 @@
 
       <!-- Table Section Header -->
       <div class="section-header">
-        <div class="section-title">Kelola Tanya Jawab Keluhan Pelanggan</div>
+        <div class="section-title">Kelola Tanya Jawab Forum</div>
         <button class="reset-btn" onclick="resetAllConsultations()">🧹 Hapus Semua Pertanyaan</button>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs-container">
+        <button class="tab-btn active" id="tab-menunggu" onclick="switchTab('Menunggu Jawaban')">🟡 Menunggu Jawaban</button>
+        <button class="tab-btn" id="tab-diskusi" onclick="switchTab('Sedang Diskusi')">🔵 Sedang Diskusi</button>
+        <button class="tab-btn" id="tab-terjawab" onclick="switchTab('Terjawab')">🟢 Terjawab</button>
       </div>
 
       <!-- DATA TABLE -->
@@ -382,16 +420,16 @@
           <thead>
             <tr>
               <th style="width: 5%;">No</th>
-              <th style="width: 20%;">Penanya</th>
-              <th style="width: 15%;">Kategori</th>
-              <th style="width: 40%;">Detail Pertanyaan & Jawaban</th>
+              <th style="width: 15%;">Penanya</th>
+              <th style="width: 20%;">Topik / Judul</th>
+              <th style="width: 40%;">Pertanyaan & Diskusi Balasan</th>
               <th style="width: 10%;">Status</th>
               <th style="width: 10%;">Aksi</th>
             </tr>
           </thead>
           <tbody id="consultTableBody">
             <tr>
-              <td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Memuat forum tanya jawab...</td>
+              <td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Memuat forum diskusi...</td>
             </tr>
           </tbody>
         </table>
@@ -400,28 +438,28 @@
     </div>
   </section>
 
-  <!-- ANSWER CONSULTATION MODAL -->
+  <!-- REPLY CONSULTATION MODAL -->
   <div id="answerModal" class="modal" style="display: none;">
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">&times;</button>
-      <h3 style="font-family: var(--font-heading); color: var(--accent-gold-glow); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Jawab Pertanyaan Keluhan</h3>
+      <h3 style="font-family: var(--font-heading); color: var(--accent-gold-glow); font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Berikan Balasan Diskusi</h3>
       
-      <form id="answerForm" onsubmit="handleSendAnswer(event)">
+      <form id="answerForm" onsubmit="handleSendReply(event)">
         <input type="hidden" id="modalConsultId">
         
         <div class="form-group">
-          <label>Keluhan / Masalah Pelanggan</label>
+          <label>Topik Diskusi / Pertanyaan</label>
           <div id="modalQuestionText" style="padding: 12px; background: rgba(0,0,0,0.15); border-radius: 10px; font-size: 13.5px; line-height: 1.5; font-style: italic; opacity: 0.9;">
             "Pertanyaan"
           </div>
         </div>
 
         <div class="form-group">
-          <label for="modalAnswerText">Tanggapan / Solusi Ahli Kecantikan</label>
-          <textarea id="modalAnswerText" rows="6" required placeholder="Tuliskan saran perawatan, produk, atau treatment salon yang direkomendasikan..."></textarea>
+          <label for="modalAnswerText">Tanggapan Admin / Pemilik Salon</label>
+          <textarea id="modalAnswerText" rows="5" required placeholder="Tuliskan balasan untuk pertanyaan tersebut..."></textarea>
         </div>
 
-        <button type="submit" id="modalSubmitBtn" class="modal-submit-btn">💾 Simpan & Publikasikan Balasan</button>
+        <button type="submit" id="modalSubmitBtn" class="modal-submit-btn">💾 Kirim Balasan</button>
       </form>
     </div>
   </div>
@@ -457,9 +495,20 @@
       loadConsultations();
     });
 
+    let allConsultations = [];
+    let currentTab = 'Menunggu Jawaban';
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      if (tabName === 'Menunggu Jawaban') document.getElementById('tab-menunggu').classList.add('active');
+      if (tabName === 'Sedang Diskusi') document.getElementById('tab-diskusi').classList.add('active');
+      if (tabName === 'Terjawab') document.getElementById('tab-terjawab').classList.add('active');
+      renderTable();
+    }
+
     async function loadConsultations() {
       const token = localStorage.getItem("humaira_token");
-      const tbody = document.getElementById("consultTableBody");
       const statAnsweredEl = document.getElementById("statAnswered");
       const statPendingEl = document.getElementById("statPending");
 
@@ -471,80 +520,97 @@
           const errData = await response.json().catch(() => ({}));
           throw new Error(errData.message || "Gagal mengambil data forum konsultasi.");
         }
-        const list = await response.json();
+        allConsultations = await response.json();
 
         // 1. Gather stats counters
-        const pendingCount = list.filter(item => item.status === 'Pending').length;
-        const answeredCount = list.filter(item => item.status === 'Answered' || item.status === 'Resolved').length;
+        const pendingCount = allConsultations.filter(item => item.status === 'Menunggu Jawaban').length;
+        const answeredCount = allConsultations.filter(item => item.status === 'Terjawab' || item.status === 'Selesai').length;
 
         statPendingEl.textContent = pendingCount;
         statAnsweredEl.textContent = answeredCount;
 
-        // 2. Render Table
-        if (list.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Belum ada pertanyaan konsultasi di database.</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = list.map((item, index) => {
-          let statusText = 'Pending';
-          let statusClass = 'pending';
-          if (item.status === 'Answered') {
-            statusText = 'Terjawab';
-            statusClass = 'answered';
-          } else if (item.status === 'Resolved') {
-            statusText = 'Selesai';
-            statusClass = 'resolved';
-          }
-
-          let actionButtons = '';
-          if (item.status === 'Pending') {
-            actionButtons = `
-              <button class="btn-action answer" onclick="openAnswerModal(${item.id}, \`${item.question.replace(/`/g, '\\`').replace(/"/g, '&quot;').replace(/\n/g, ' ')}\`, '')">✍️ Jawab</button>
-            `;
-          } else if (item.status === 'Answered') {
-            actionButtons = `
-              <div class="action-btn-group">
-                <button class="btn-action edit" onclick="openAnswerModal(${item.id}, \`${item.question.replace(/`/g, '\\`').replace(/"/g, '&quot;').replace(/\n/g, ' ')}\`, \`${item.answer.replace(/`/g, '\\`').replace(/"/g, '&quot;').replace(/\n/g, ' ')}\`)">Edit Jawab</button>
-                <button class="btn-action resolve" onclick="resolveConsultation(${item.id})">✓ Selesai</button>
-              </div>
-            `;
-          } else {
-            actionButtons = `<span style="font-size: 12.5px; opacity: 0.6;">✓ Tuntas Terjawab</span>`;
-          }
-
-          const answerText = item.answer 
-            ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); color: var(--accent-gold-glow); font-style: italic;"><strong>Jawab:</strong> "${item.answer}"</div>` 
-            : '';
-
-          return `
-            <tr>
-              <td>${index + 1}</td>
-              <td>
-                <strong>${item.customer_name}</strong>
-                <div style="font-size: 11px; opacity: 0.8; margin-top: 2px;">${item.customer_email || '-'}</div>
-              </td>
-              <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${item.category}</span></td>
-              <td>
-                <div style="font-size: 13.5px; line-height: 1.4;">"${item.question}"</div>
-                ${answerText}
-              </td>
-              <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-              <td>${actionButtons}</td>
-            </tr>
-          `;
-        }).join('');
-
+        renderTable();
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ff8b8b;">${err.message}</td></tr>`;
+        document.getElementById("consultTableBody").innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ff8b8b;">${err.message}</td></tr>`;
       }
     }
 
+    function renderTable() {
+      const tbody = document.getElementById("consultTableBody");
+      
+      const filteredList = allConsultations.filter(item => {
+        if (currentTab === 'Terjawab') {
+          return item.status === 'Terjawab' || item.status === 'Selesai';
+        }
+        return item.status === currentTab;
+      });
+
+      if (filteredList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; opacity: 0.7; padding: 25px;">Tidak ada data diskusi untuk tab ini.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredList.map((item, index) => {
+        let statusText = item.status;
+        let statusClass = 'pending';
+        if (item.status === 'Terjawab' || item.status === 'Selesai') {
+          statusClass = 'resolved';
+        } else if (item.status === 'Sedang Diskusi') {
+          statusClass = 'answered';
+        }
+
+        let actionButtons = '';
+        if (item.status !== 'Terjawab' && item.status !== 'Selesai') {
+          // Admin can reply
+          // Question text is the first message by member
+          let questionText = item.judul;
+          if (item.ConsultationMessages && item.ConsultationMessages.length > 0) {
+             questionText = item.ConsultationMessages[0].pesan;
+          }
+
+          actionButtons = `
+            <div class="action-btn-group" style="display:flex; flex-direction:column; gap:8px;">
+              <button class="btn-action answer" onclick="openAnswerModal(${item.id}, \`${questionText.replace(/`/g, '\\`').replace(/"/g, '&quot;').replace(/\n/g, ' ')}\`)">💬 Tulis Balasan</button>
+            </div>
+          `;
+        } else {
+          actionButtons = `<span style="font-size: 12.5px; opacity: 0.6; text-align:center; display:block;">✓ Terkunci</span>`;
+        }
+
+        const repliesHtml = (item.ConsultationMessages || []).map(reply => {
+          const isAdmin = reply.sender_type === 'terapis';
+          const author = isAdmin ? '👑 Terapis ✓' : `👤 ${item.User?.name || 'Member'}`;
+          return `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); color: ${isAdmin ? 'var(--accent-gold-glow)' : '#ddd'}; font-size: 13px;"><strong>${author}:</strong> "${reply.pesan}"</div>`;
+        }).join('');
+
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>
+              <strong>${item.User?.name || 'User'}</strong><br>
+              <span style="font-size:11px; opacity:0.7;">Pesan: ${(item.ConsultationMessages || []).length}</span>
+            </td>
+            <td><span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 40px; font-size: 12px;">${item.judul}</span></td>
+            <td>
+              <div style="max-height: 150px; overflow-y: auto; padding-right: 5px;">
+                ${repliesHtml}
+              </div>
+            </td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td>${actionButtons}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+
+    }
+
     // Modal Operations
-    function openAnswerModal(id, question, existingAnswer) {
+    function openAnswerModal(id, question) {
       document.getElementById("modalConsultId").value = id;
       document.getElementById("modalQuestionText").textContent = `"${question}"`;
-      document.getElementById("modalAnswerText").value = existingAnswer;
+      document.getElementById("modalAnswerText").value = "";
       document.getElementById("answerModal").style.display = "flex";
     }
 
@@ -552,58 +618,41 @@
       document.getElementById("answerModal").style.display = "none";
     }
 
-    async function handleSendAnswer(event) {
+    async function handleSendReply(event) {
       event.preventDefault();
       const id = document.getElementById("modalConsultId").value;
-      const answer = document.getElementById("modalAnswerText").value.trim();
+      const pesan = document.getElementById("modalAnswerText").value.trim();
       const token = localStorage.getItem("humaira_token");
       
       const submitBtn = document.getElementById("modalSubmitBtn");
       submitBtn.disabled = true;
-      submitBtn.textContent = "Menyimpan balasan...";
+      submitBtn.textContent = "Mengirim balasan...";
 
       try {
-        const response = await fetch(`${API_URL}/api/admin/consultations/${id}/answer`, {
-          method: 'PUT',
+        const response = await fetch(`${API_URL}/api/consultations/${id}/reply`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           },
-          body: JSON.stringify({ answer })
+          body: JSON.stringify({ pesan })
         });
 
         const resData = await response.json();
-        if (!response.ok) throw new Error(resData.message || 'Gagal menyimpan balasan.');
+        if (!response.ok) throw new Error(resData.message || 'Gagal mengirim balasan.');
 
-        alert("Sukses mempublikasikan balasan konsultasi!");
+        alert("Sukses mengirim balasan diskusi!");
         closeModal();
         loadConsultations();
       } catch (err) {
         alert(err.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "💾 Simpan & Publikasikan Balasan";
+        submitBtn.textContent = "💾 Kirim Balasan";
       }
     }
 
-    async function resolveConsultation(id) {
-      if (!confirm("Tandai konsultasi ini Selesai (Resolved)?\nTindakan ini akan mengunci status tuntas terjawab.")) return;
-      const token = localStorage.getItem("humaira_token");
-      try {
-        const response = await fetch(`${API_URL}/api/admin/consultations/${id}/resolve`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) throw new Error("Gagal menyelesaikan konsultasi.");
-        alert("Konsultasi berhasil ditandai Selesai!");
-        loadConsultations();
-      } catch (err) {
-        alert(err.message);
-      }
-    }
+    // Removed resolveConsultation since admin cannot resolve
 
     async function resetAllConsultations() {
       if (!confirm("PERINGATAN BULANAN: Anda akan menghapus seluruh data pertanyaan forum konsultasi dari database secara permanen.\n\nApakah Anda yakin?")) return;

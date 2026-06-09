@@ -159,56 +159,41 @@
 
       <div class="consultation-layout">
         
-        <!-- Form Bertanya (Stacked, Lebar) -->
-        <div class="form-container-card">
-          <h3 style="font-family: var(--font-heading); font-size: 24px; color: var(--accent-gold-glow); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 25px; text-align: center;">Tanyakan Keluhan Seputar Kecantikan & Rambut Anda</h3>
+        <!-- Banner Login -->
+        <div class="form-container-card" id="loginBannerSection" style="text-align: center;">
+          <h3 style="font-family: var(--font-heading); font-size: 22px; color: #fff; margin-bottom: 10px;">Forum Terkunci</h3>
+          <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px; font-size: 14px;">Silakan login terlebih dahulu untuk dapat membuat topik diskusi atau ikut memberikan tanggapan/balasan.</p>
+          <a href="profile.html" class="wa-btn" style="display: inline-block; padding: 10px 24px; font-size: 14px; text-decoration: none;">Login Sekarang</a>
+        </div>
 
-          <div id="memberBanner" style="display: none; background: rgba(212, 175, 55, 0.1); border: 1px dashed var(--accent-gold); padding: 12px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; color: var(--accent-gold-glow); text-align: center;">
-            Bertanya sebagai member terdaftar: <strong id="memberName"></strong>
+        <!-- Form Bertanya (Stacked, Lebar) -->
+        <div class="form-container-card" id="formSection" style="display: none;">
+          <h3 style="font-family: var(--font-heading); font-size: 24px; color: var(--accent-gold-glow); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 25px; text-align: center;">Buat Topik Diskusi Baru</h3>
+
+          <div style="background: rgba(212, 175, 55, 0.1); border: 1px dashed var(--accent-gold); padding: 12px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; color: var(--accent-gold-glow); text-align: center;">
+            Anda bergabung diskusi sebagai: <strong id="memberName"></strong>
           </div>
 
           <form id="consultationForm" style="display: flex; flex-direction: column; gap: 20px;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-              <!-- Nama (Hanya Guest) -->
-              <div class="field-group" id="guestNameGroup">
-                <label for="consultName" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block;">Nama Lengkap</label>
-                <input type="text" id="consultName" placeholder="Masukkan nama lengkap Anda" required style="width: 100%; border: none; border-radius: 10px; padding: 12px 15px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; box-sizing: border-box;">
-              </div>
-
-              <!-- Email (Optional, Hanya Guest) -->
-              <div class="field-group" id="guestEmailGroup">
-                <label for="consultEmail" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block;">Email (Opsional)</label>
-                <input type="email" id="consultEmail" placeholder="nama@email.com" style="width: 100%; border: none; border-radius: 10px; padding: 12px 15px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; box-sizing: border-box;">
-              </div>
-            </div>
-
-            <!-- Kategori Masalah -->
             <div class="field-group">
-              <label for="consultCategory" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block;">Kategori Keluhan</label>
-              <select id="consultCategory" required style="width: 100%; border: none; border-radius: 10px; padding: 12px 15px; font-size: 14px; outline: none; background: var(--primary-color); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; cursor: pointer; font-family: var(--font-body); box-sizing: border-box;">
-                <option value="Rambut">💇‍♀️ Masalah Rambut</option>
-                <option value="SPA">🌸 Relaksasi & SPA</option>
-                <option value="Wedding">💍 Tata Rias / Wedding</option>
-                <option value="Lainnya">✨ Lainnya</option>
-              </select>
+              <label for="consultTitle" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block;">Topik / Judul Pertanyaan</label>
+              <input type="text" id="consultTitle" placeholder="Misal: Perawatan rambut rontok dan berketombe" required style="width: 100%; border: none; border-radius: 10px; padding: 12px 15px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; box-sizing: border-box;">
             </div>
 
-            <!-- Isi Pertanyaan -->
             <div class="field-group">
-              <label for="consultQuestion" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block;">Isi Pertanyaan / Keluhan</label>
-              <textarea id="consultQuestion" rows="5" placeholder="Tuliskan keluhan atau pertanyaan Anda secara lengkap dan detail (misal: 'Rambut saya rontok dan lepek di bagian ujungnya, saran perawatannya apa ya?')..." required style="width: 100%; border: none; border-radius: 12px; padding: 15px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; font-family: var(--font-body); resize: none; box-sizing: border-box;"></textarea>
+              <label for="consultQuestion" style="font-weight: 500; font-size: 14px; margin-bottom: 8px; display: block;">Isi Pertanyaan Lengkap</label>
+              <textarea id="consultQuestion" rows="5" placeholder="Tuliskan keluhan atau pertanyaan Anda secara lengkap dan detail..." required style="width: 100%; border: none; border-radius: 12px; padding: 15px; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; font-family: var(--font-body); resize: none; box-sizing: border-box;"></textarea>
             </div>
 
-            <!-- Submit -->
             <button type="submit" id="submitBtn" class="wa-btn" style="margin-top: 10px; font-family: var(--font-body); font-weight: 600; letter-spacing: 0.5px; padding: 14px; font-size: 16px;">
-              ✉️ Kirim Pertanyaan Konsultasi
+              ✉️ Kirim Topik Diskusi
             </button>
           </form>
         </div>
 
         <!-- Feed Pertanyaan & Jawaban (Stacked, Lebar) -->
         <div class="feed-container-card">
-          <h3 style="font-family: var(--font-heading); font-size: 24px; color: var(--accent-gold-glow); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 25px; text-align: center;">Diskusi Forum & Konsultasi Terjawab</h3>
+          <h3 style="font-family: var(--font-heading); font-size: 24px; color: var(--accent-gold-glow); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 25px; text-align: center;">Diskusi Forum</h3>
           
           <div id="discussionFeed" style="display: flex; flex-direction: column; gap: 20px;">
             <p style="text-align: center; padding: 30px; opacity: 0.8; font-style: italic;">Memuat daftar diskusi...</p>
@@ -225,13 +210,14 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       checkAuth();
-      loadDiscussions();
     });
 
-    // Cek Login Member
     async function checkAuth() {
       const token = localStorage.getItem("humaira_token");
-      if (!token) return;
+      if (!token) {
+        loadDiscussions();
+        return;
+      }
 
       try {
         const response = await fetch(`${API_URL}/api/auth/me`, {
@@ -240,21 +226,16 @@
 
         if (response.ok) {
           currentUser = await response.json();
-          if (currentUser.role === 'customer') {
-            document.getElementById("guestNameGroup").style.display = "none";
-            document.getElementById("guestEmailGroup").style.display = "none";
-            document.getElementById("consultName").removeAttribute("required");
-
-            document.getElementById("memberBanner").style.display = "block";
-            document.getElementById("memberName").textContent = currentUser.name;
-          }
+          document.getElementById("loginBannerSection").style.display = "none";
+          document.getElementById("formSection").style.display = "block";
+          document.getElementById("memberName").textContent = currentUser.name;
         }
       } catch (error) {
-        console.error("Gagal memeriksa auth member:", error);
+        console.error("Gagal memeriksa auth:", error);
       }
+      loadDiscussions();
     }
 
-    // Muat data tanya-jawab dari server
     async function loadDiscussions() {
       const feed = document.getElementById("discussionFeed");
       try {
@@ -263,33 +244,68 @@
 
         const list = await response.json();
         if (list.length === 0) {
-          feed.innerHTML = `<p style="text-align: center; padding: 30px; opacity: 0.7; font-style: italic;">Belum ada diskusi konsultasi terjawab saat ini. Jadilah yang pertama bertanya!</p>`;
+          feed.innerHTML = `<p style="text-align: center; padding: 30px; opacity: 0.7; font-style: italic;">Belum ada topik diskusi. Jadilah yang pertama memulai diskusi!</p>`;
           return;
         }
 
-        feed.innerHTML = list.map(item => {
-          const statusBadge = item.status === 'Resolved' 
-            ? `<span class="status-badge-resolved">✓ Selesai Terjawab</span>`
-            : `<span class="status-badge-answered">Terjawab</span>`;
+        feed.innerHTML = list.map(thread => {
+          let statusBadge = '';
+          if (thread.status === 'Terjawab' || thread.status === 'Selesai') {
+            statusBadge = `<span class="status-badge-resolved">🟢 Terjawab</span>`;
+          } else if (thread.status === 'Sedang Diskusi') {
+            statusBadge = `<span class="status-badge-answered" style="color: #60a5fa; border-color: #3b82f6;">🔵 Sedang Diskusi</span>`;
+          } else {
+            statusBadge = `<span class="status-badge-answered">🟡 Menunggu Jawaban</span>`;
+          }
 
-          const categoryEmoji = item.category === 'Rambut' ? '💇‍♀️' 
-            : (item.category === 'SPA' ? '🌸' 
-            : (item.category === 'Wedding' ? '💍' : '✨'));
+          const repliesHtml = (thread.ConsultationMessages || []).map(msg => {
+            const isAdmin = msg.sender_type === 'terapis';
+            const authorPrefix = isAdmin ? 'Terapis ✓' : (thread.User?.name || 'Member');
+            return `
+              <div class="answer-box" style="${isAdmin ? '' : 'border-left-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.03);'}">
+                <div class="${isAdmin ? 'answer-admin' : 'question-user'}" style="margin-bottom: 6px; font-size: 13px;">${authorPrefix}</div>
+                <div class="answer-text" style="${isAdmin ? '' : 'font-style: normal; opacity: 0.9;'} font-size: 13.5px;">${msg.pesan}</div>
+              </div>
+            `;
+          }).join('');
+
+          const isSolved = thread.status === 'Terjawab' || thread.status === 'Selesai';
+          let replyFormHtml = '';
+          let resolveBtnHtml = '';
+
+          if (currentUser && !isSolved) {
+            replyFormHtml = `
+              <form class="replyForm" onsubmit="submitReply(event, ${thread.id})" style="margin-top: 20px; display: flex; gap: 10px;">
+                <input type="text" placeholder="Tulis balasan Anda..." required style="flex: 1; border: none; border-radius: 8px; padding: 12px 15px; font-size: 13px; outline: none; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; box-sizing: border-box; font-family: var(--font-body);">
+                <button type="submit" class="wa-btn" style="padding: 10px 20px; font-size: 13px; border-radius: 8px; font-family: var(--font-body); font-weight: 500;">Kirim Balasan</button>
+              </form>
+            `;
+            if (currentUser.id === thread.user_id && currentUser.role !== 'admin') {
+              resolveBtnHtml = `<button onclick="resolveConsultation(${thread.id})" style="margin-top: 15px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: var(--font-body); font-size: 12px; transition: 0.3s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.3)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.2)'">✓ Tandai Terjawab</button>`;
+            }
+          }
+
+          if (isSolved) {
+            replyFormHtml = `<div style="margin-top: 20px; text-align: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 13px; color: #a1a1aa; font-style: italic;">Thread ini telah ditandai Selesai dan tidak dapat dibalas lagi.</div>`;
+          }
+
+          // Fetch first message for the question box if possible, or just don't show double
+          // Since the API returns all messages including the first one as part of ConsultationMessages,
+          // we can just hide the old question box and show only the thread title and messages.
 
           return `
             <div class="consultation-card">
               <div class="consultation-meta">
-                <span class="category-badge">${categoryEmoji} ${item.category}</span>
+                <span class="category-badge">📌 ${thread.judul}</span>
                 ${statusBadge}
               </div>
-              <div class="question-box">
-                <div class="question-user">👤 ${item.customer_name} bertanya:</div>
-                <div class="question-text">"${item.question}"</div>
+              
+              <div class="replies-container" style="margin-top: 15px; display: flex; flex-direction: column; gap: 5px;">
+                ${repliesHtml}
               </div>
-              <div class="answer-box">
-                <div class="answer-admin">👑 Balasan Pemilik Salon:</div>
-                <div class="answer-text">"${item.answer}"</div>
-              </div>
+
+              ${replyFormHtml}
+              ${resolveBtnHtml}
             </div>
           `;
         }).join('');
@@ -299,62 +315,94 @@
       }
     }
 
-    // Submit Pertanyaan
     document.getElementById("consultationForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!currentUser) return alert("Anda harus login untuk membuat topik!");
+
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
       submitBtn.textContent = "Mengirim...";
 
       const token = localStorage.getItem("humaira_token");
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
       const payload = {
-        customer_name: currentUser ? currentUser.name : document.getElementById("consultName").value.trim(),
-        customer_email: currentUser ? currentUser.email : document.getElementById("consultEmail").value.trim(),
-        category: document.getElementById("consultCategory").value,
-        question: document.getElementById("consultQuestion").value.trim()
+        judul: document.getElementById("consultTitle").value.trim(),
+        pertanyaan: document.getElementById("consultQuestion").value.trim()
       };
 
       try {
         const response = await fetch(`${API_URL}/api/consultations`, {
           method: "POST",
-          headers,
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
           body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
-          let errMsg = 'Gagal mengirim konsultasi.';
-          try {
-            const errData = await response.json();
-            errMsg = errData.message || errMsg;
-          } catch (e) {
-            try {
-              const text = await response.text();
-              if (text.includes('<pre>')) {
-                const match = text.match(/<pre>([\s\S]*?)<\/pre>/);
-                if (match) errMsg = match[1].replace(/<br>/g, '\n').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'");
-              } else {
-                errMsg = `Error ${response.status}: ${response.statusText}`;
-              }
-            } catch (e2) {}
-          }
-          throw new Error(errMsg);
+          const errData = await response.json();
+          throw new Error(errData.message || "Gagal membuat topik.");
         }
-
-        const resData = await response.json();
-
-        alert(resData.message);
+        
+        document.getElementById("consultTitle").value = "";
         document.getElementById("consultQuestion").value = "";
-        loadDiscussions(); // Refresh feed
+        loadDiscussions(); 
       } catch (error) {
         alert("Gagal: " + error.message);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "✉️ Kirim Pertanyaan Konsultasi";
+        submitBtn.textContent = "✉️ Kirim Topik Diskusi";
       }
     });
+
+    async function submitReply(e, threadId) {
+      e.preventDefault();
+      if (!currentUser) return alert("Anda harus login untuk membalas!");
+      
+      const input = e.target.querySelector('input');
+      const btn = e.target.querySelector('button');
+      const pesan = input.value.trim();
+      
+      if (!pesan) return;
+
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = "...";
+      const token = localStorage.getItem("humaira_token");
+
+      try {
+        const response = await fetch(`${API_URL}/api/consultations/${threadId}/reply`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+          body: JSON.stringify({ pesan })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.message || "Gagal mengirim balasan.");
+        }
+        loadDiscussions();
+      } catch (error) {
+        alert("Gagal: " + error.message);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    }
+
+    async function resolveConsultation(id) {
+      if (!confirm("Apakah Anda yakin ingin menandai diskusi ini sebagai Terjawab? Diskusi akan dikunci.")) return;
+      const token = localStorage.getItem("humaira_token");
+      try {
+        const response = await fetch(`${API_URL}/api/consultations/${id}/resolve`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error("Gagal menyelesaikan konsultasi.");
+        loadDiscussions();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
   </script>
 </body>
 </html>
