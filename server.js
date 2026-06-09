@@ -133,7 +133,7 @@ const Stylist = sequelize.define('Stylist', {
 const Consultation = sequelize.define('Consultation', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   user_id: { type: DataTypes.INTEGER, allowNull: true },
-  judul: { type: DataTypes.STRING, allowNull: false },
+  judul: { type: DataTypes.STRING, allowNull: true },
   status: { type: DataTypes.STRING, defaultValue: 'Menunggu Jawaban' } // Menunggu Jawaban, Sedang Diskusi, Terjawab
 });
 
