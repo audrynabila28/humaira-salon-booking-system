@@ -101,6 +101,7 @@ const BookingItem = sequelize.define('BookingItem', {
 
 const Application = sequelize.define('Application', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  applicant_id: { type: DataTypes.INTEGER, allowNull: true },
   name: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
@@ -111,6 +112,14 @@ const Application = sequelize.define('Application', {
   interview_link: { type: DataTypes.STRING, allowNull: true },
   interview_date: { type: DataTypes.STRING, allowNull: true },
   interview_time: { type: DataTypes.STRING, allowNull: true }
+});
+
+const Applicant = sequelize.define('Applicant', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  password: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false }
 });
 
 const Stylist = sequelize.define('Stylist', {
@@ -146,6 +155,8 @@ User.hasMany(Consultation, { foreignKey: 'user_id', onDelete: 'CASCADE', constra
 Consultation.belongsTo(User, { foreignKey: 'user_id', constraints: false });
 Consultation.hasMany(ConsultationMessage, { foreignKey: 'consultation_id', onDelete: 'CASCADE' });
 ConsultationMessage.belongsTo(Consultation, { foreignKey: 'consultation_id' });
+Applicant.hasMany(Application, { foreignKey: 'applicant_id', onDelete: 'SET NULL' });
+Application.belongsTo(Applicant, { foreignKey: 'applicant_id' });
 
 // ==========================================
 // SEEDING MASTER DATA AWAL (JIKA DATABASE KOSONG)
@@ -373,6 +384,90 @@ app.patch('/api/auth/subscribe', authenticateJWT, async (req, res) => {
     res.json({ message: 'Status langganan newsletter berhasil diubah.' });
   } catch (error) {
     res.status(500).json({ message: 'Gagal merubah status langganan.', error: error.message });
+  }
+});
+
+// ==========================================
+// AUTENTIKASI PELAMAR (APPLICANT AUTH)
+// ==========================================
+
+// Pendaftaran Pelamar Baru
+app.post('/api/auth/applicant/register', async (req, res) => {
+  try {
+    const { name, email, password, phone } = req.body;
+
+    if (!name || !email || !password || !phone) {
+      return res.status(400).json({ message: 'Lengkapi semua kolom pendaftaran pelamar.' });
+    }
+
+    // Cek apakah email sudah terdaftar di Applicant
+    const existingApplicant = await Applicant.findOne({ where: { email } });
+    if (existingApplicant || email.toLowerCase() === ADMIN_EMAIL) {
+      return res.status(400).json({ message: 'Email sudah terdaftar.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newApplicant = await Applicant.create({
+      name,
+      email,
+      password: hashedPassword,
+      phone
+    });
+
+    res.status(201).json({ message: 'Pendaftaran pelamar berhasil! Silakan login.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal melakukan pendaftaran pelamar.', error: error.message });
+  }
+});
+
+// Login Pelamar
+app.post('/api/auth/applicant/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Masukkan email dan password.' });
+    }
+
+    const applicant = await Applicant.findOne({ where: { email } });
+    if (!applicant) {
+      return res.status(400).json({ message: 'Email tidak ditemukan.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, applicant.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Password salah.' });
+    }
+
+    const token = jwt.sign({ id: applicant.id, email: applicant.email, role: 'applicant', name: applicant.name }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({
+      message: 'Login pelamar berhasil!',
+      token,
+      user: { id: applicant.id, name: applicant.name, email: applicant.email, role: 'applicant', phone: applicant.phone }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Terjadi kegagalan login server.', error: error.message });
+  }
+});
+
+// Mendapatkan data profile pelamar aktif
+app.get('/api/auth/applicant/me', authenticateJWT, async (req, res) => {
+  try {
+    if (req.user.role !== 'applicant') {
+      return res.status(403).json({ message: 'Akses ditolak. Hanya untuk Pelamar.' });
+    }
+
+    const applicant = await Applicant.findByPk(req.user.id, {
+      attributes: ['id', 'name', 'email', 'phone']
+    });
+
+    if (!applicant) {
+      return res.status(404).json({ message: 'Pelamar tidak ditemukan.' });
+    }
+
+    res.json({ ...applicant.toJSON(), role: 'applicant' });
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal memuat profil pelamar.', error: error.message });
   }
 });
 
@@ -712,15 +807,20 @@ app.get('/api/admin/stats', authenticateJWT, isAdmin, async (req, res) => {
 // REKRUTMEN / CAREER API (Tugas Mandiri Elan)
 // ==========================================
 
-// 1. Kirim Lamaran Pekerjaan Baru (Publik)
-app.post('/api/applications', async (req, res) => {
+// 1. Kirim Lamaran Pekerjaan Baru (Wajib Login sebagai Pelamar)
+app.post('/api/applications', authenticateJWT, async (req, res) => {
   try {
+    if (req.user.role !== 'applicant') {
+      return res.status(403).json({ message: 'Hanya pelamar yang dapat mengirimkan lamaran.' });
+    }
+
     const { name, email, phone, position, experience, cv_link } = req.body;
     if (!name || !email || !phone || !position || !experience || !cv_link) {
       return res.status(400).json({ message: 'Mohon lengkapi semua data formulir lamaran.' });
     }
 
     const newApp = await Application.create({
+      applicant_id: req.user.id,
       name,
       email,
       phone,
@@ -731,7 +831,7 @@ app.post('/api/applications', async (req, res) => {
     });
 
     res.status(201).json({
-      message: 'Lamaran Anda berhasil dikirim! Silakan tunggu konfirmasi selanjutnya.',
+      message: 'Lamaran Anda berhasil dikirim! Silakan pantau statusnya di Dashboard Pelamar.',
       applicationId: newApp.id
     });
   } catch (error) {
@@ -739,7 +839,24 @@ app.post('/api/applications', async (req, res) => {
   }
 });
 
-// 2. Mendapatkan Semua Berkas Pelamar (Admin Only)
+// 2. Mendapatkan Histori Lamaran Pribadi (Pelamar Only)
+app.get('/api/applications/my', authenticateJWT, async (req, res) => {
+  try {
+    if (req.user.role !== 'applicant') {
+      return res.status(403).json({ message: 'Hanya pelamar yang dapat melihat riwayat lamaran.' });
+    }
+
+    const list = await Application.findAll({
+      where: { applicant_id: req.user.id },
+      order: [['id', 'DESC']]
+    });
+    res.json(list);
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal mengambil riwayat lamaran.', error: error.message });
+  }
+});
+
+// 3. Mendapatkan Semua Berkas Pelamar (Admin Only)
 app.get('/api/admin/applications', authenticateJWT, isAdmin, async (req, res) => {
   try {
     const list = await Application.findAll({
@@ -751,145 +868,45 @@ app.get('/api/admin/applications', authenticateJWT, isAdmin, async (req, res) =>
   }
 });
 
-// 3. Mengupdate Status Lamaran & Input Link Wawancara (Admin Only)
-app.put('/api/admin/applications/:id/status', authenticateJWT, isAdmin, async (req, res) => {
+// 4. Memproses Aksi Keputusan Lamaran oleh Admin (Diterima, Ditolak, Wawancara)
+app.put('/api/admin/applications/:id/action', authenticateJWT, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, interview_link } = req.body;
+    const { action, interview_date, interview_time, interview_link } = req.body;
+
+    if (!['Accepted', 'Rejected', 'Interview'].includes(action)) {
+      return res.status(400).json({ message: 'Aksi keputusan tidak valid.' });
+    }
 
     const application = await Application.findByPk(id);
     if (!application) {
       return res.status(404).json({ message: 'Berkas pelamar tidak ditemukan.' });
     }
 
-    application.status = status;
-    if (status === 'Interview') {
-      if (!interview_link) {
-        return res.status(400).json({ message: 'Link wawancara (Gmeet/VC WA) wajib diisi untuk status Wawancara.' });
-      }
-      application.interview_link = interview_link;
-    } else {
-      application.interview_link = null;
-    }
-    
-    await application.save();
-
-    // Integrasi Notifikasi Kirim WhatsApp ke Pelamar
-    if (status === 'Interview') {
-      try {
-        const messageText = [
-          `Halo ${application.name},`,
-          `Selamat! Lamaran Anda di *Humaira Salon & Wedding* untuk posisi *${application.position}* telah lolos seleksi berkas.`,
-          ``,
-          `Kami ingin mengundang Anda untuk mengikuti tahap wawancara online via Video Call/Google Meet pada:`,
-          `🔗 *Tautan Wawancara*:`,
-          `${interview_link}`,
-          ``,
-          `Mohon persiapkan diri Anda dengan baik. Sampai jumpa di sesi wawancara! ✨`,
-          `_Pesan dikirim secara otomatis oleh sistem rekrutmen Humaira Salon._`
-        ].join('\n');
-
-        const axios = require('axios');
-        const phoneNumber = "6289646946880"; // Nomor WA salon utama / API gateway
-        await axios.post('https://api.fonnte.com/send', {
-          target: application.phone,
-          message: messageText,
-          countryCode: '62'
-        }, {
-          headers: {
-            'Authorization': process.env.FONNTE_API_KEY || 'dummy_key'
-          }
-        });
-        console.log(`[Recruitment WA] Undangan wawancara terkirim otomatis ke ${application.phone}`);
-      } catch (err) {
-        console.error('[Recruitment WA Error] Gagal mengirim WA:', err.message);
-      }
-    }
-
-    res.json({ message: `Status lamaran berhasil diperbarui menjadi ${status}.`, application });
-  } catch (error) {
-    res.status(500).json({ message: 'Gagal memperbarui status lamaran.', error: error.message });
-  }
-});
-
-// 4. Admin-Only: Update Keputusan Rekrutmen & Generate Link WhatsApp Click-to-Chat (wa.me)
-app.post('/api/admin/applications/:id/whatsapp', authenticateJWT, isAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { decision, interview_date, interview_time, interview_link } = req.body;
-
-    if (!decision || (decision !== 'Accepted' && decision !== 'Rejected')) {
-      return res.status(400).json({ message: 'Keputusan harus berupa Accepted atau Rejected.' });
-    }
-
-    const application = await Application.findByPk(id);
-    if (!application) {
-      return res.status(404).json({ message: 'Pelamar tidak ditemukan.' });
-    }
-
-    let messageText = '';
-
-    if (decision === 'Accepted') {
+    if (action === 'Interview') {
       if (!interview_date || !interview_time || !interview_link) {
-        return res.status(400).json({ message: 'Untuk pelamar yang diterima, tanggal, waktu wawancara, dan tautan Google Meet wajib diisi.' });
+        return res.status(400).json({ message: 'Tanggal, waktu, dan tautan rapat wajib diisi untuk status Wawancara.' });
       }
-
+      application.status = 'Interview';
       application.interview_date = interview_date;
       application.interview_time = interview_time;
       application.interview_link = interview_link;
-      application.status = 'Interview';
-
-      messageText = [
-        `Halo *${application.name}*,`,
-        ``,
-        `Selamat! Berkas lamaran Anda di *Humaira Salon & Wedding* untuk posisi *${application.position}* dinyatakan *LOLOS* seleksi berkas.`,
-        ``,
-        `Kami ingin mengundang Anda untuk mengikuti sesi wawancara (interview) secara online pada:`,
-        `📅 *Hari/Tanggal* : ${interview_date}`,
-        `⏰ *Jam*          : ${interview_time} WIB`,
-        `🔗 *Link Gmeet*   : ${interview_link}`,
-        ``,
-        `Mohon persiapkan diri Anda dengan baik. Silakan hubungi nomor ini untuk konfirmasi kehadiran. Terima kasih! ✨`,
-        `_Pesan dikirim secara otomatis oleh sistem rekrutmen Humaira Salon._`
-      ].join('\n');
-    } else {
+    } else if (action === 'Accepted') {
+      application.status = 'Accepted';
+      application.interview_date = null;
+      application.interview_time = null;
+      application.interview_link = null;
+    } else if (action === 'Rejected') {
       application.status = 'Rejected';
       application.interview_date = null;
       application.interview_time = null;
       application.interview_link = null;
-
-      messageText = [
-        `Halo *${application.name}*,`,
-        ``,
-        `Terima kasih atas minat Anda untuk berkarir di *Humaira Salon & Wedding* sebagai *${application.position}*.`,
-        ``,
-        `Setelah menyeleksi seluruh berkas lamaran yang masuk, dengan berat hati kami menginformasikan bahwa saat ini kami belum dapat memproses lamaran Anda ke tahap berikutnya.`,
-        ``,
-        `Kami sangat menghargai waktu dan antusiasme Anda. Sukses selalu untuk karir Anda di masa mendatang! 🙏`,
-        `_Pesan dikirim secara otomatis oleh sistem rekrutmen Humaira Salon._`
-      ].join('\n');
     }
 
     await application.save();
-
-    // Bersihkan nomor WhatsApp pelamar
-    let cleanPhone = application.phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.startsWith('0')) {
-      cleanPhone = '62' + cleanPhone.slice(1);
-    }
-
-    // Buat URL API WhatsApp Web (wa.me)
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(messageText)}`;
-
-    res.json({ 
-      message: `Berhasil memperbarui keputusan lamaran (${decision}). Tautan WhatsApp siap dibuka.`, 
-      application,
-      whatsappUrl 
-    });
-
+    res.json({ message: `Keputusan lamaran berhasil diperbarui menjadi ${application.status}.`, application });
   } catch (error) {
-    console.error('[Recruitment WhatsApp Error]:', error.message);
-    res.status(500).json({ message: 'Terjadi kesalahan saat memproses keputusan rekrutmen.', error: error.message });
+    res.status(500).json({ message: 'Gagal memproses keputusan lamaran.', error: error.message });
   }
 });
 
