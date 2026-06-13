@@ -306,28 +306,44 @@
       let guestName = "";
       let guestPhone = "";
       if (!currentUser) {
-        guestName = guestNameEl ? guestNameEl.value.trim() : "";
-        guestPhone = guestPhoneEl ? guestPhoneEl.value.trim() : "";
+        const gnEl = document.getElementById("guestName");
+        const gpEl = document.getElementById("guestPhone");
+        guestName = gnEl ? gnEl.value.trim() : "";
+        guestPhone = gpEl ? gpEl.value.trim() : "";
 
         if (!guestName) {
           alert("Silakan isi Nama Anda untuk pemesanan.");
-          guestNameEl && guestNameEl.focus();
+          if (gnEl) gnEl.focus();
           return;
         }
         if (!guestPhone) {
           alert("Silakan isi Nomor WhatsApp Anda.");
-          guestPhoneEl && guestPhoneEl.focus();
+          if (gpEl) gpEl.focus();
           return;
         }
       }
 
       try {
         // 4. CEK BENTROK JADWAL (Server-side real-time check)
+        // Ubah state tombol menjadi loading
+        const originalBtnText = bookingBtn.innerHTML;
+        bookingBtn.innerHTML = "⏳ Memproses...";
+        bookingBtn.style.opacity = "0.7";
+        bookingBtn.style.pointerEvents = "none";
+
         const checkConflictResponse = await fetch(`${API_URL}/api/bookings/check-conflict?date=${bookingDate}&time=${bookingTime}`);
-        if (!checkConflictResponse.ok) throw new Error("Gagal memeriksa bentrok jadwal.");
+        if (!checkConflictResponse.ok) {
+          bookingBtn.innerHTML = originalBtnText;
+          bookingBtn.style.opacity = "1";
+          bookingBtn.style.pointerEvents = "auto";
+          throw new Error("Gagal memeriksa bentrok jadwal.");
+        }
         
         const conflictData = await checkConflictResponse.json();
         if (conflictData.conflict) {
+          bookingBtn.innerHTML = originalBtnText;
+          bookingBtn.style.opacity = "1";
+          bookingBtn.style.pointerEvents = "auto";
           alert("Maaf, jam reservasi tersebut sudah dipesan pelanggan lain di sistem. Silakan pilih jam kunjungan lainnya!");
           bookingTimeEl && bookingTimeEl.focus();
           return;
@@ -353,6 +369,11 @@
         });
 
         const resData = await response.json();
+        
+        bookingBtn.innerHTML = originalBtnText;
+        bookingBtn.style.opacity = "1";
+        bookingBtn.style.pointerEvents = "auto";
+
         if (!response.ok) throw new Error(resData.message || "Gagal menyimpan reservasi.");
 
         // 6. FORMAT PESAN WHATSAPP & REDIRECT INSTAN
@@ -385,16 +406,23 @@
         selectedQuantities = {};
         if (bookingDateEl) bookingDateEl.value = "";
         if (bookingTimeEl) bookingTimeEl.value = "";
-        if (guestNameEl) guestNameEl.value = "";
-        if (guestPhoneEl) guestPhoneEl.value = "";
+        const gnEl = document.getElementById("guestName");
+        const gpEl = document.getElementById("guestPhone");
+        if (gnEl) gnEl.value = "";
+        if (gpEl) gpEl.value = "";
 
         renderServices();
         updateCheckout();
 
         // Redirect langsung ke WhatsApp
-        window.location.href = waUrl;
+        window.open(waUrl, "_blank") || window.location.assign(waUrl);
 
       } catch (error) {
+        if (bookingBtn) {
+          bookingBtn.innerHTML = "💬 Booking Now via WhatsApp";
+          bookingBtn.style.opacity = "1";
+          bookingBtn.style.pointerEvents = "auto";
+        }
         alert("Gagal melakukan reservasi: " + error.message);
       }
     });
