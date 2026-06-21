@@ -219,15 +219,23 @@ const seedData = async () => {
 
 // Hubungkan dan sinkronisasi database secara aman (lazy load lewat middleware sebelum API jalan)
 let isDbSynced = false;
+let dbSyncPromise = null;
+
 const ensureDbSynced = async (req, res, next) => {
   if (!isDbSynced) {
+    if (!dbSyncPromise) {
+      dbSyncPromise = (async () => {
+        await sequelize.sync({ alter: true });
+        await seedData();
+        isDbSynced = true;
+        console.log('[Database] Database terkoneksi, disinkronkan, dan di-seed.');
+      })();
+    }
     try {
-      await sequelize.sync({ alter: true });
-      await seedData();
-      isDbSynced = true;
-      console.log('[Database] Database terkoneksi, disinkronkan, dan di-seed.');
+      await dbSyncPromise;
     } catch (err) {
       console.error('[Database Error] Gagal sinkronisasi:', err);
+      dbSyncPromise = null; // izinkan retry
       return res.status(500).json({ message: 'Gagal menginisialisasi database.', error: err.message });
     }
   }
