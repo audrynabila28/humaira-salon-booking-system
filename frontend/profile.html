@@ -533,7 +533,7 @@
           </div>
           <button type="submit" class="submit-btn">Masuk Ke Profil</button>
           <p style="text-align: center; margin-top: 15px; font-size: 13px; opacity: 0.85;">
-            *Ingin masuk sebagai Admin? Masukkan e-mail dan password admin Anda.
+            *Bergabunglah sebagai Member untuk menikmati proses booking yang lebih cepat serta akses ke berbagai layanan dan penawaran eksklusif.
           </p>
         </form>
 
@@ -700,12 +700,6 @@
                 <p style="opacity: 0.7;">Memuat data...</p>
               </div>
             </div>
-            <div>
-              <h4 style="border-bottom: 2px solid rgba(255,255,255,0.15); padding-bottom: 6px; margin-bottom: 15px;">Kategori Perawatan SPA</h4>
-              <div id="catalogSpaList">
-                <p style="opacity: 0.7;">Memuat data...</p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -836,7 +830,6 @@
           <select id="addServiceCategory" style="width: 100%; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none;">
             <option value="rambut" style="background: #8d5f5f;">Perawatan Rambut</option>
             <option value="wedding" style="background: #8d5f5f;">Paket Wedding</option>
-            <option value="spa" style="background: #8d5f5f;">Perawatan SPA</option>
           </select>
         </div>
         <div class="form-group" style="margin-top: 20px;">
@@ -1493,11 +1486,9 @@
 
         const hairList = document.getElementById("catalogHairList");
         const weddingList = document.getElementById("catalogWeddingList");
-        const spaList = document.getElementById("catalogSpaList");
 
         const hairs = services.filter(s => s.category === 'rambut');
         const weddings = services.filter(s => s.category === 'wedding');
-        const spas = services.filter(s => s.category === 'spa');
 
         hairList.innerHTML = hairs.map(s => `
           <div class="catalog-item-card">
@@ -1525,18 +1516,7 @@
           </div>
         `).join('');
 
-        spaList.innerHTML = spas.map(s => `
-          <div class="catalog-item-card">
-            <div class="catalog-item-info">
-              <h4>${s.name}</h4>
-              <p>${formatRupiah(s.price)}</p>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button class="edit-price-btn" onclick="openEditServiceModal(${s.id})">Edit</button>
-              <button class="edit-price-btn" style="background:#ef4444; color:white;" onclick="handleDeleteService(${s.id})">&times;</button>
-            </div>
-          </div>
-        `).join('');
+
 
       } catch (error) {
         console.error(error);

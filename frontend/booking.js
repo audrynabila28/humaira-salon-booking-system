@@ -48,7 +48,7 @@
     // 1. Cek parameter URL untuk menentukan tab aktif awal
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
-    if (categoryParam === 'rambut' || categoryParam === 'spa' || categoryParam === 'wedding') {
+    if (categoryParam === 'rambut' || categoryParam === 'wedding') {
       activeCategory = categoryParam;
     }
 
@@ -245,7 +245,7 @@
     }
 
     cartItemsListEl.innerHTML = selected.map(item => {
-      const catPrefix = item.category === 'rambut' ? '💇‍♀️' : (item.category === 'spa' ? '🌸' : '💍');
+      const catPrefix = item.category === 'rambut' ? '💇‍♀️' : '💍';
       return `
         <div class="cart-item-row">
           <div class="cart-item-info">

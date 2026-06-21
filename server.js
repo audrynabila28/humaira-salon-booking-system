@@ -186,14 +186,7 @@ const seedData = async () => {
       { name: 'Paket Resepsi Silver', category: 'wedding', price: 2500000, description: 'Rias pengantin akad & resepsi (2 kali ganti busana) + dekorasi pelaminan standar.' },
       { name: 'Paket Resepsi Gold', category: 'wedding', price: 3500000, description: 'Paket tata rias eksklusif akad & resepsi (3 kali ganti busana) + dekorasi pelaminan mewah + karpet jalan.' },
       { name: 'Paket Makeup Family', category: 'wedding', price: 500000, description: 'Rias wajah natural elegan untuk 2 orang keluarga inti/pendamping.' },
-      { name: 'Paket Dekorasi + MUA', category: 'wedding', price: 5000000, description: 'Paket dekorasi pelaminan lengkap + Rias Pengantin + Rias Orang Tua + Rias Penerima Tamu.' },
-
-      // Perawatan SPA
-      { name: 'Pijat Tradisional Tubuh', category: 'spa', price: 120000, description: 'Pijat seluruh tubuh 60 menit untuk meredakan penat dan lelah.' },
-      { name: 'Lulur Scrub Susu & Rempah', category: 'spa', price: 150000, description: 'Lulur tradisional mengangkat sel kulit mati agar kulit halus bersinar.' },
-      { name: 'Massage Refleksi Kaki', category: 'spa', price: 60000, description: 'Pijat refleksi titik saraf kaki untuk melancarkan peredaran darah.' },
-      { name: 'Totok Wajah & Facial', category: 'spa', price: 80000, description: 'Rangkaian pembersihan wajah lengkap disertai totok aura wajah.' },
-      { name: 'Paket Spa Rileks Humaira', category: 'spa', price: 250000, description: 'Paket kombinasi pijat tubuh, lulur, dan masker wajah premium.' }
+      { name: 'Paket Dekorasi + MUA', category: 'wedding', price: 5000000, description: 'Paket dekorasi pelaminan lengkap + Rias Pengantin + Rias Orang Tua + Rias Penerima Tamu.' }
     ]);
     console.log('[Database] Berhasil melakukan seed master data katalog layanan.');
   }
@@ -201,9 +194,8 @@ const seedData = async () => {
   const stylistCount = await Stylist.count();
   if (stylistCount === 0) {
     await Stylist.bulkCreate([
-      { name: 'Siti Rahma', specialization: 'Perawatan Rambut', phone: '6289646946880', status: 'Active' },
-      { name: 'Dewi Lestari', specialization: 'Perawatan SPA', phone: '6289646946880', status: 'Active' },
-      { name: 'Ayu Kartika', specialization: 'Makeup Artist (MUA)', phone: '6289646946880', status: 'Active' },
+      { name: 'Nabila Anastasya', specialization: 'Hair Stylist Expert', phone: '6289646946880', status: 'Active' },
+      { name: 'Bunga Citra', specialization: 'Make-Up Artist (MUA)', phone: '6289646946880', status: 'Inactive' },
       { name: 'Budi Hartono', specialization: 'All-Rounder Stylist', phone: '6289646946880', status: 'Active' }
     ]);
     console.log('[Database] Berhasil melakukan seed master data kapster/stylist.');
@@ -219,7 +211,7 @@ const seedData = async () => {
     await ConsultationMessage.create({
       consultation_id: adminThread.id,
       sender_type: 'terapis',
-      pesan: 'Silakan tanyakan keluhan seputar rambut, SPA, atau riasan pengantin di sini. Kami dan pelanggan lain siap membantu berdiskusi secara interaktif!'
+      pesan: 'Silakan tanyakan keluhan seputar rambut, tata rias, atau paket pengantin di sini. Kami dan pelanggan lain siap membantu berdiskusi secara interaktif!'
     });
     console.log('[Database] Berhasil melakukan seed master data forum konsultasi.');
   }
